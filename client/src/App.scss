@@ -1,0 +1,822 @@
+@import url('https://fonts.googleapis.com/css2?family=K2D:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Fahkwang", sans-serif;
+    font-style: normal;
+}
+
+:root {
+    --primaryColor: hsl(208.037, 100%, 21%);
+    --hoverColor: hsl(209, 86%, 53%);
+    --palegreen: hsl(96, 75%, 89%);
+    --whiteColor: hsl(0, 0%, 100%);
+    --blackColor: hsl(0, 0%, 18%);
+    --grayText: hsl(0, 0%, 75%);
+    --bgColor: hsl(113, 11%, 85%);
+    --inputColor: hsl(330, 12%, 97%);
+
+    /* Font */
+    --biggestFontSize: 2.5rem;
+    --h1FontSize: 1.5rem;
+    --h2FontSize: 1.25rem;
+    --h3FontSize: 1rem;
+    --normalFontSize: 0.938rem;
+    --smallFontSize: 0.813rem;
+    --smallestFontSize: 0.75rem;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+
+.grid {
+    display: grid;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+html {
+    font-size: 90%;
+}
+
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+}
+
+.icon {
+    font-size: var(--h2FontSize);
+    cursor: pointer;
+}
+
+img,
+video {
+    width: 100%;
+    height: auto;
+}
+
+.message {
+    display: none;
+}
+
+.showMessage {
+    display: block;
+    color: var(--whiteColor);
+    background: rgb(255, 0, 0);
+    padding: 10px;
+    border-radius: 3px;
+    text-align: center;
+}
+
+.btn {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    color: var(--grayText);
+}
+
+.btn.icon {
+    margin-left: 0.5rem;
+}
+
+.btn:hover {
+    color: var(--primaryColor);
+}
+
+// start loginPage
+.loginPage {
+    height: 100vh;
+    width: 100%;
+    margin: auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 7px 50px rgb(214, 223, 213);
+
+    .container {
+        height: 75vh;
+        width: 60%;
+        margin: auto;
+        justify-content: space-between;
+        border-radius: 10px;
+        background: hsl(0, 0%, 91%);
+
+        .videoDiv {
+            position: relative;
+            display: flex;
+            flex-basis: 50%;
+            width: 70%;
+            height: 100%;
+            padding: 1 1.5rem;
+            text-align: center;
+            justify-content: center;
+            flex-direction: column;
+            margin: auto;
+            border-radius: 10px;
+            overflow: hidden;
+
+            video,
+            .footerDiv {
+                position: absolute;
+            }
+
+            video {
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+
+            .textDiv {
+                position: relative;
+
+                .title {
+                    color: var(--whiteColor);
+                    font-size: 35px;
+                    font-weight: 800;
+                }
+
+                p {
+                    color: var(--whiteColor);
+                    padding: 1rem;
+                    font-weight: 400;
+                }
+            }
+
+            .footerDiv {
+                bottom: 10px;
+                padding: 0 1rem;
+                height: 60px;
+                background: rgba(255, 255, 255, 0.248);
+                left: 10px;
+                right: 10px;
+                justify-content: space-between;
+                backdrop-filter: blur(1px);
+                border-radius: 10px;
+
+                .text {
+                    color: var(--whiteColor);
+                }
+
+                .btn {
+                    background: var(--whiteColor);
+                    color: var(--primaryColor);
+                    padding: 0.8rem 1.5rem;
+                    border-radius: 10px;
+                    font-weight: 400;
+                    transition: 0.3s ease;
+
+                    &:hover {
+                        background: var(--hoverColor);
+                        color: var(--blackColor);
+
+                    }
+                }
+            }
+        }
+
+        .formDiv {
+            flex-basis: 50%;
+            margin: auto;
+            flex-direction: column;
+            gap: 1.5rem;
+            transform: translate(-1rem);
+        }
+
+        .headerDiv {
+            text-align: center;
+            padding: 1.5rem 0;
+
+            img {
+                width: 60px;
+                padding-bottom: 0.5rem;
+            }
+
+            h1 {
+                font-size: 25px;
+                color: var(--blackColor);
+                font-weight: 600;
+            }
+        }
+
+        .form {
+            gap: 1rem;
+
+            .inputDiv {
+                .icon {
+                    color: var(--grayText);
+                }
+
+                input {
+                    background: none;
+                    outline: none;
+                    border: none;
+                    width: 200px;
+                }
+
+                label {
+                    color: var(--blackColor);
+                    font-weight: 400;
+                    font-size: 14px;
+                    padding: 0.5rem 0;
+                    display: block;
+                }
+
+                .input {
+                    gap: 0.5rem;
+                    padding: 1rem;
+                    background: var(--inputColor);
+                    border-radius: 10px;
+                }
+            }
+
+            .btn {
+                padding: 0.8rem;
+                background: var(--primaryColor);
+                border-radius: 10px;
+                color: var(--whiteColor);
+                align-items: center;
+                margin: auto;
+                justify-content: center;
+                font-size: 16px;
+                width: 100%;
+                gap: 0.5rem;
+                transition: 0.3s ease;
+
+                .icon {
+                    font-size: 25px;
+                    transition: 0.3s ease;
+                }
+
+                &:hover {
+                    color: var(--hoverColor);
+                    transform: translate(5px);
+                }
+            }
+        }
+
+        .forgotPassword {
+            text-align: center;
+            color: var(--blackColor);
+            font-size: 14px;
+            opacity: 0.7;
+
+            a {
+                text-decoration: underline;
+                cursor: pointer;
+                opacity: 0.7;
+            }
+        }
+    }
+}
+
+// end loginPage
+
+// start sidebar
+.sidebar {
+    width: 100%; // กำหนดความกว้างของ Sidebar ให้เต็มคอลัมน์
+
+
+    .menu-label {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .menu-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        width: 100%; // ทำให้ NavLink ขยายเต็มความกว้างของ Sidebar
+        box-sizing: border-box; // รวม padding ในความกว้างทั้งหมด
+        transition: background-color 0.3s ease;
+
+
+        &:hover {
+            background-color: var(--primaryColor); // เปลี่ยนสีพื้นหลังเมื่อ hover
+            color: #ffffff; // เปลี่ยนสีข้อความเมื่อ hover
+        }
+    }
+
+    .menu-secoundary {
+        margin-right: 10px; // เพิ่มระยะห่างระหว่างไอคอนกับข้อความ
+    }
+
+    .custom-font-size {
+        font-size: 18px; // ปรับขนาดตัวอักษรตามที่ต้องการ
+        font-weight: 500;
+    }
+
+    .a-logout {
+        background-color: #E63946;
+        color: #ffffff;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+
+        &:hover {
+            transform: scale(1.07); // ขยายขนาดเล็กน้อยเมื่อ hover
+        }
+    }
+}
+
+// end sidebar
+
+.location-table {
+    width: 99%;
+    table-layout: fixed;
+    /* ใช้การจัดวางแบบคงที่ */
+}
+
+.location-table th,
+.location-table td {
+    width: 33.33%;
+    /* กำหนดความกว้างของแต่ละคอลัมน์ให้เท่ากัน */
+}
+
+.user-table {
+    width: 99%;
+    table-layout: fixed;
+    /* ใช้การจัดวางแบบคงที่ */
+}
+
+.user-table th,
+.user-table td {
+    width: 16.66%;
+    /* กำหนดความกว้างของแต่ละคอลัมน์ให้เท่ากัน */
+}
+
+// start slider image
+.slider {
+    position: relative;
+    width: 99%;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.slider-image {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.slider-image img {
+    width: 100%;
+    height: 400px;
+    flex-shrink: 0;
+}
+
+.prev,
+.next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.prev {
+    left: 0;
+}
+
+.next {
+    right: 0;
+}
+
+.prev:hover,
+.next:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+// end slider image
+
+// start cart
+.floating-cart-btn {
+    position: fixed;
+    top: 30px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.cart-icon-container {
+    position: relative;
+    display: inline-block;
+}
+
+.cart-preview {
+    position: fixed;
+    top: 55px;
+    right: 100px;
+    width: 400px;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 10px;
+}
+
+.cart-preview ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cart-preview li {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.cart-preview li:not(:last-child) {
+    border-bottom: 1px solid #eee;
+}
+
+.cart-preview .item-name {
+    flex: 1;
+}
+
+.cart-preview .item-quantity {
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+/* modal style */
+.cart-modal {
+    margin-top: 120px;
+    width: 800px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    /* เปลี่ยนพื้นหลังเป็นสีอ่อน */
+    position: relative;
+    border-radius: 10px;
+    /* ปรับขอบมนให้มากขึ้น */
+    max-height: 1000px;
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    /* เพิ่มเงา */
+}
+
+.cart-modal h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.cart-modal ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cart-item {
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    /* เพิ่มเส้นแบ่งระหว่างสินค้า */
+}
+
+.cart-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.checkout-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.checkout-btn:hover {
+    background-color: #218838;
+    /* เปลี่ยนสีเมื่อโฮเวอร์ */
+}
+
+.close-modal-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.close-modal-btn:hover {
+    background-color: #cc0000;
+}
+
+.cart-modal-overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+    /* ทำให้พื้นหลังมืดลง */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-like-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* modal td th */
+.modal-like-table th.item-name {
+    text-align: left;
+    width: 50%;
+    /* ชื่อสินค้ากว้าง 50% ของตาราง */
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-like-table th.item-quantity {
+    text-align: center;
+    justify-content: center;
+    width: 30%;
+    /* จำนวนกว้าง 30% ของตาราง */
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-like-table th.item-actions {
+    text-align: center;
+    justify-content: center;
+    width: 20%;
+    /* อื่น ๆ กว้าง 20% ของตาราง */
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-like-table td.item-name {
+    font-weight: 500;
+    padding: 20px;
+    width: 50%;
+    /* ชื่อสินค้ากว้าง 50% ของตาราง */
+}
+
+.modal-like-table td.item-quantity {
+    padding: 15px;
+    text-align: center;
+    justify-content: center;
+    width: 30%;
+    /* จำนวนกว้าง 30% ของตาราง */
+}
+
+.modal-like-table td.item-actions {
+    padding: 15px;
+    text-align: center;
+    justify-content: center;
+    width: 20%;
+    /* อื่น ๆ กว้าง 20% ของตาราง */
+}
+
+/* ปรับการจัดวางของจำนวน */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-controls input {
+    width: 60px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.quantity-controls button {
+    background-color: white;
+    /* พื้นหลังปุ่มเป็นสีขาว */
+    color: #007bff;
+    /* สีตัวอักษรเป็นสีฟ้า */
+    border: 1px solid #007bff;
+    /* ขอบปุ่มเป็นสีฟ้า */
+    padding: 3px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+    /* เพิ่มการเปลี่ยนแปลงสีเมื่อ hover */
+}
+
+.quantity-controls button:hover {
+    background-color: white;
+    /* พื้นหลังยังคงเป็นสีขาวเมื่อ hover */
+    color: #0056b3;
+    /* เปลี่ยนสีตัวอักษรเป็นสีเข้มขึ้นเมื่อ hover */
+    border: 1px solid #0056b3;
+    /* เปลี่ยนสีขอบเป็นสีเข้มขึ้นเมื่อ hover */
+}
+
+.quantity-controls .decrease-btn {
+    margin-right: 8px;
+
+}
+
+.quantity-controls .increase-btn {
+    margin-left: 8px;
+}
+
+/* ปุ่มลบ */
+.modal-like-table .item-actions .remove-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.modal-like-table .item-actions .remove-btn:hover {
+    background-color: #cc0000;
+}
+
+.fixed-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.fixed-table th,
+.fixed-table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.fixed-table th:nth-child(2),
+.fixed-table td:nth-child(2) {
+    width: 200px;
+    /* กำหนดความกว้างคงที่ให้กับคอลัมน์ที่สอง */
+}
+
+.product-details p {
+    display: inline;
+    margin-right: 10px;
+    /* เพิ่มระยะห่างระหว่างแต่ละ p */
+}
+
+@media screen and (max-width:602px) {
+
+    .loginPage,
+    .registerPage {
+        .container {
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            padding: 1.5rem;
+
+            .videoDiv {
+                width: 100%;
+
+                .textDiv {
+                    .title {
+                        font-size: 20px;
+                    }
+
+                    p {
+                        padding: 1rem;
+                    }
+                }
+            }
+
+            .footerDiv {
+                .text {
+                    font-size: 12px;
+                }
+
+                .btn {
+                    padding: 0.4rem 1.5rem;
+                }
+            }
+        }
+
+        .formDiv {
+            gap: 1rem;
+            transform: translateY(-0.5rem);
+
+            .headerDiv {
+                padding: 1rem 0;
+
+                img {
+                    width: 40px;
+                }
+
+                h1 {
+                    font-size: 20px;
+                }
+            }
+
+            .form {
+                gap: 0.5rem;
+
+                .inputDiv {
+                    input {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width:678px) {
+
+    .loginPage,
+    .registerPage {
+        .container {
+            .videoDiv {
+                .textDiv {
+                    .title {
+                        font-size: 25px;
+                    }
+
+                    p {
+                        padding: 1rem;
+                    }
+                }
+            }
+
+            .footerDiv {
+                .text {
+                    font-size: 12px;
+                }
+
+                .btn {
+                    padding: 0.8rem 1.5rem;
+                }
+            }
+        }
+
+        .formDiv {
+            .headerDiv {
+                padding: 1rem 0;
+
+                h1 {
+                    font-size: 20px;
+                }
+            }
+
+            .form {
+                .inputDiv {
+                    input {
+                        width: 100%;
+                        max-width: 200px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width:927px) {
+
+    .loginPage,
+    .registerPage {
+        .container {
+            width: 85%;
+        }
+    }
+}
+
+
+// Hide Scroll Bar
+// ::-webkit-scrollbar{
+//     display: none;
+// }
