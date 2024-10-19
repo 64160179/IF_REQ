@@ -1,4 +1,5 @@
 import WareHouse from '../models/WareHouseModel.js';
+import Product from "../models/ProductModel.js";
 
 export const getWareHouses = async (req, res) => {
     try {

@@ -11,6 +11,7 @@ import LocationRoute from "./routes/LocationRoute.js";
 import CountingRoute from "./routes/CountingRoute.js";
 import BuyInRoute from "./routes/BuyInRoute.js";
 import PayOutRoute from "./routes/PayOutRoute.js";
+import PayOutDetailRoute from "./routes/PayOutDetailRoute.js";
 import WareHouseRoute from "./routes/WareHouseRoute.js";
 dotenv.config();
 
@@ -22,17 +23,17 @@ const store = new sessionStore({
     db: db
 });
 
-// (async () => {
-//     try {
-//         // ซิงค์โมเดลกับฐานข้อมูล
-//         await db.sync();
-//         console.log("Database synced successfully.");
-//     } catch (error) {
-//         console.error("Unable to sync database:", error);
-//     }
-// })();
+(async () => {
+    try {
+        // ซิงค์โมเดลกับฐานข้อมูล
+        await db.sync();
+        console.log("Database synced successfully.");
+    } catch (error) {
+        console.error("Unable to sync database:", error);
+    }
+})();
 
-// store.sync();
+store.sync();
 
 app.use(session({
     secret: process.env.SESS_SECRET,
@@ -58,6 +59,7 @@ app.use(LocationRoute);
 app.use(CountingRoute);
 app.use(BuyInRoute);
 app.use(PayOutRoute);
+app.use(PayOutDetailRoute);
 app.use(WareHouseRoute);
 
 app.listen(process.env.APP_PORT, () => {

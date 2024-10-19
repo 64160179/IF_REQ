@@ -11,12 +11,13 @@ export const Login = async (req, res) =>{
     const match = await argon2.verify(user.password, req.body.password);
     if(!match) return res.status(400).json({msg: "รหัสผ่านไม่ถูกต้อง"});
     req.session.userId = user.uuid;
+    const id = user.id;
     const uuid = user.uuid;
     const fname = user.fname;
     const lname = user.lname;
     const email = user.email;
     const role = user.role;
-    res.status(200).json({uuid, fname, lname, email, role});
+    res.status(200).json({id, uuid, fname, lname, email, role});
 }
 
 export const Me = async (req, res) =>{
@@ -24,7 +25,7 @@ export const Me = async (req, res) =>{
         return res.status(401).json({msg: "Please login to your account !"});
     }
     const user = await User.findOne({
-        attributes:['uuid', 'fname', 'lname', 'email', 'role'],
+        attributes:['id','uuid', 'fname', 'lname', 'email', 'role'],
         where: {
             uuid: req.session.userId
         }

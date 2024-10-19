@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import '../../App.css'
@@ -6,35 +6,38 @@ import '../../App.css'
 const SummaryList = () => {
     const [products, setProducts] = useState([]);
     const [buyIns, setBuyIns] = useState([]);
-    const [payOuts, setPayOuts] = useState([]);
+
     const [wareHouses, setWareHouses] = useState([]);
     const [currentDate, setCurrentDate] = useState('');
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
+    const [search, setSearch] = useState('');
+
+    const fetchData = useCallback(async () => {
+        const productsResponse = await axios.get(`http://localhost:5000/products?search=${search}`);
+        const buyInsResponse = await axios.get('http://localhost:5000/buyins');
+
+        const wareHousesResponse = await axios.get('http://localhost:5000/warehouses');
+        setProducts(productsResponse.data);
+        setBuyIns(buyInsResponse.data);
+
+        setWareHouses(wareHousesResponse.data);
+    }, [search]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const productsResponse = await axios.get('http://localhost:5000/products');
-            const buyInsResponse = await axios.get('http://localhost:5000/buyins');
-            const payOutsResponse = await axios.get('http://localhost:5000/payouts');
-            const wareHousesResponse = await axios.get('http://localhost:5000/warehouses');
-            setProducts(productsResponse.data);
-            setBuyIns(buyInsResponse.data);
-            setPayOuts(payOutsResponse.data);
-            setWareHouses(wareHousesResponse.data);
-        };
         fetchData();
-    }, []);
+    }, [fetchData]);
+
+    const handleSearch = (e) => {
+        setSearch(e.target.value); // อัปเดตค่าการค้นหาเมื่อผู้ใช้กรอกข้อมูล
+    };
 
     const getBuyInData = (productId) => {
         const buyIn = buyIns.find(buyin => buyin.productId === productId);
-        return buyIn ? { quantity: buyIn.quantity, price: buyIn.price, summary: buyIn.summary } : { quantity: 0, price: 0, summary: 0 };
+        return buyIn ? { quantity: parseFloat(buyIn.quantity).toFixed(2), price: buyIn.price, summary: buyIn.summary } : { quantity: 0, price: 0, summary: 0 };
     };
 
-    const getPayOutData = (productId) => {
-        const payOut = payOuts.find(payout => payout.productId === productId);
-        return payOut ? { quantity: payOut.quantity, price: payOut.price, summary: payOut.summary } : { quantity: 0, price: 0, summary: 0 };
-    };
+
 
     const getWareHouseData = (productId) => {
         const wareHouse = wareHouses.find(wareHouse => wareHouse.productId === productId);
@@ -68,12 +71,14 @@ const SummaryList = () => {
         setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
     };
 
+
+
     return (
         <div>
             <br />
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '99%' }}>
                 <h1 className="title">สรุปสินค้าคงเหลือ</h1>
-                <span>{currentDate}</span>
+                <span style={{ fontSize: '18px',fontWeight: 'bold', color: '#666',marginBottom: '20px' }}>วันที่: {currentDate}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', width: '99%' }}>
                 <Link to="/products/buyin" className="button is-link" style={{ marginRight: '10px' }}>
@@ -84,8 +89,8 @@ const SummaryList = () => {
                     className="input"
                     placeholder="ค้นหา รหัส และ ชื่อวัสดุ - อุปกรณ์"
                     style={{ flex: 1 }}
-                // value={search}  // กำหนดค่า search ใน input
-                // onChange={handleSearch} // ฟังก์ชันเรียกใช้งานเมื่อมีการกรอกข้อมูล
+                    value={search}  // กำหนดค่า search ใน input
+                    onChange={handleSearch} // ฟังก์ชันเรียกใช้งานเมื่อมีการกรอกข้อมูล
                 />
             </div>
             <table className="table is-bordered  is-fullwidth " style={{ width: '99%' }}>
@@ -93,32 +98,32 @@ const SummaryList = () => {
                     <tr>
                         <th className="has-text-centered" style={{ width: '70px', verticalAlign: 'middle', backgroundColor: "rgb(255,255,204)" }} rowSpan="2">ลำดับ</th>
                         <th className="has-text-centered" style={{ width: '400px', backgroundColor: "rgb(255,255,204)" }} colSpan="2" rowSpan="1">รายการ</th>
-                        <th colSpan="3" className="has-text-centered" style={{ color: 'blue', backgroundColor: "rgb(226,239,217)" }}>รับ</th>
-                        <th colSpan="3" className="has-text-centered" style={{ backgroundColor: "rgb(252,225,214)" }}>จ่าย</th>
-                        <th colSpan="3" className="has-text-centered" style={{ color: 'red', backgroundColor: "rgb(255,255,204)" }}>คงเหลือ</th>
+                        <th className="has-text-centered" style={{ color: 'blue', backgroundColor: "rgb(226,239,217)" }}>รับ</th>
+                        <th className="has-text-centered" style={{ backgroundColor: "rgb(252,225,214)" }}>จ่าย</th>
+                        <th className="has-text-centered" style={{ color: 'red', backgroundColor: "rgb(255,255,204)" }}>คงเหลือ</th>
                     </tr>
                     <tr>
                         {/* รายการ */}
                         <th className="has-text-centered" style={{ width: '80px', backgroundColor: "rgb(255,255,204)" }}>รหัส</th>
-                        <th className="has-text-centered" style={{ width: '300px', backgroundColor: "rgb(255,255,204)" }}>ชื่อวัสดุ - อุปกรณ์</th>
+                        <th className="has-text-centered" style={{ width: '600px', backgroundColor: "rgb(255,255,204)" }}>ชื่อวัสดุ - อุปกรณ์</th>
                         {/* รับ */}
                         <th className="has-text-centered" style={{ color: 'blue', backgroundColor: "rgb(226,239,217)" }}>จำนวน</th>
-                        <th className="has-text-centered" style={{ color: 'blue', backgroundColor: "rgb(226,239,217)" }}>ราคา</th>
-                        <th className="has-text-centered" style={{ color: 'blue', backgroundColor: "rgb(226,239,217)" }}>รวม</th>
+                        {/* <th className="has-text-centered" style={{ color: 'blue', backgroundColor: "rgb(226,239,217)" }}>ราคา</th>
+                        <th className="has-text-centered" style={{ color: 'blue', backgroundColor: "rgb(226,239,217)" }}>รวม</th> */}
                         {/* จ่าย */}
                         <th className="has-text-centered" style={{ backgroundColor: "rgb(252,225,214)" }}>จำนวน</th>
-                        <th className="has-text-centered" style={{ backgroundColor: "rgb(252,225,214)" }}>ราคา</th>
-                        <th className="has-text-centered" style={{ backgroundColor: "rgb(252,225,214)" }}>รวม</th>
+                        {/* <th className="has-text-centered" style={{ backgroundColor: "rgb(252,225,214)" }}>ราคา</th>
+                        <th className="has-text-centered" style={{ backgroundColor: "rgb(252,225,214)" }}>รวม</th> */}
                         {/* คงเหลือ */}
                         <th className="has-text-centered" style={{ color: 'red', backgroundColor: "rgb(255,255,204)" }}>จำนวน</th>
-                        <th className="has-text-centered" style={{ color: 'red', backgroundColor: "rgb(255,255,204)" }}>ราคา</th>
-                        <th className="has-text-centered" style={{ color: 'red', backgroundColor: "rgb(255,255,204)" }}>รวม</th>
+                        {/* <th className="has-text-centered" style={{ color: 'red', backgroundColor: "rgb(255,255,204)" }}>ราคา</th>
+                        <th className="has-text-centered" style={{ color: 'red', backgroundColor: "rgb(255,255,204)" }}>รวม</th> */}
                     </tr>
                 </thead>
                 <tbody>
                     {currentProducts.map((product) => {
                         const buyInData = getBuyInData(product.id);
-                        const payOutData = getPayOutData(product.id);
+                        // const payOutData = getPayOutData(product.id);
                         const wareHouseData = getWareHouseData(product.id);
                         return (
                             <tr key={product.uuid}>
@@ -129,16 +134,16 @@ const SummaryList = () => {
                                 </td>
                                 {/* รับ */}
                                 <td className="has-text-centered" style={{ color: 'blue' }}>{buyInData.quantity}</td>
-                                <td className="has-text-centered" style={{ color: 'blue' }}>{buyInData.price}</td>
-                                <td className="has-text-centered" style={{ color: 'blue' }}>{buyInData.summary}</td>
+                                {/* <td className="has-text-centered" style={{ color: 'blue' }}>{buyInData.price}</td>
+                                <td className="has-text-centered" style={{ color: 'blue' }}>{buyInData.summary}</td> */}
                                 {/* จ่าย */}
-                                <td className="has-text-centered">{payOutData.quantity}</td>
-                                <td className="has-text-centered">{payOutData.price}</td>
-                                <td className="has-text-centered">{payOutData.summary}</td>
+                                <td className="has-text-centered"></td>
+                                {/* <td className="has-text-centered">{payOutData.price}</td>
+                                <td className="has-text-centered">{payOutData.summary}</td> */}
                                 {/* คงเหลือ */}
                                 <td className="has-text-centered" style={{ color: 'red' }}>{wareHouseData.quantity}</td>
-                                <td className="has-text-centered" style={{ color: 'red' }}>{wareHouseData.price}</td>
-                                <td className="has-text-centered" style={{ color: 'red' }}>{wareHouseData.summary}</td>
+                                {/* <td className="has-text-centered" style={{ color: 'red' }}>{wareHouseData.price}</td>
+                                <td className="has-text-centered" style={{ color: 'red' }}>{wareHouseData.summary}</td> */}
                             </tr>
                         );
                     })}

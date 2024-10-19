@@ -46,17 +46,19 @@ const FormBuyInProduct = () => {
     };
 
     const addField = () => {
-        if (fields.length < 10) {
+        if (fields.length) {
             setFields([...fields, { id: counter, selectedProduct: null, quantity: '', countingUnitName: '' }]);
             setCounter(counter + 1); // Increment counter
         } else {
-            setMsg('สามารถเพิ่มได้เพียง 10 รายการเท่านั้น !');
+            setMsg('!');
         }
     };
 
     const removeField = (index) => {
-        const newFields = fields.filter((_, i) => i !== index);
-        setFields(newFields);
+        if (index > 0) { 
+            const newFields = fields.filter((_, i) => i !== index);
+            setFields(newFields);
+        }
     };
 
     const checkDuplicateProducts = (fields) => {
@@ -68,6 +70,10 @@ const FormBuyInProduct = () => {
             setMsg('');
         }
     };
+
+    useEffect(() => {
+        checkDuplicateProducts(fields);
+    }, [fields]);
 
     const formatDecimal = (value) => {
         return parseFloat(value).toFixed(2);
@@ -85,13 +91,24 @@ const FormBuyInProduct = () => {
                         title: title,
                     });
                 } else {
-                    throw new Error('Please fill in all fields.');
+                    throw new Error('คุณยังไม่ได้ทำการเลือกสินค้า !');
                 }
             }));
             navigate("/summary");
         } catch (error) {
             setMsg(error.message || 'Error saving buy-in data.');
         }
+    };
+
+    
+    const handleCancel = () => {
+        // รีเซ็ตสถานะของฟอร์ม
+        setFields([{ id: 1, selectedProduct: null }]);
+        setTitle('');
+        setDoc_number('');
+        setMsg('');
+        // ย้อนกลับไปหน้า /summary
+        navigate('/summary');
     };
 
     return (
@@ -113,7 +130,6 @@ const FormBuyInProduct = () => {
                                             value={doc_number}
                                             onChange={(e) => setDoc_number(e.target.value)}
                                             placeholder="กรุณากรอกชื่อ เลขที่เอกสาร"
-                                            required
                                         />
                                     </div>
                                 </div>
@@ -200,7 +216,7 @@ const FormBuyInProduct = () => {
                         </button>
                     </div>
                     <div className="control">
-                        <button type="button" className="button is-danger" style={{ width: "120px" }}>
+                        <button type="button" onClick={handleCancel} className="button is-danger" style={{ width: "120px" }}>
                             ยกเลิก
                         </button>
                     </div>

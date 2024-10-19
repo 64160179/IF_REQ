@@ -5,6 +5,7 @@ import { BiSolidCategory } from "react-icons/bi";
 import { TbShoppingCartFilled } from "react-icons/tb";
 import { RiNumbersFill } from "react-icons/ri";
 import { FaHistory } from "react-icons/fa";
+import { AiFillProduct } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
 import { getMe, LogOut, reset } from "../features/authSlice";
 import '../../src/App.css'
@@ -44,7 +45,12 @@ const Sidebar = () => {
           </li>
           <li className="custom-font-size">
             <NavLink to={"/products"} className="menu-item">
-              <TbShoppingCartFilled className="menu-secoundary" /> วัสดุ-อุปกรณ์
+              <AiFillProduct className="menu-secoundary" /> วัสดุ-อุปกรณ์
+            </NavLink>
+          </li>
+          <li className="custom-font-size">
+            <NavLink to={"/checkout"} className="menu-item">
+              <TbShoppingCartFilled className="menu-secoundary" /> ยืนยันการเบิก
             </NavLink>
           </li>
           <li className="custom-font-size">

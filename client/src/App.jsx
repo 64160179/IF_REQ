@@ -27,7 +27,7 @@ import AddCountingUnit from './pages/CountingUnit/AddCountingUnit.jsx';
 import EditCountingUnit from './pages/CountingUnit/EditCountingUnit.jsx';
 
 import Checkout from './pages/Checkout/Checkout.jsx';
-
+import ConfirmCheckout from './pages/Checkout/ConfirmCheckout.jsx';
 
 function App() {
   return (
@@ -60,6 +60,7 @@ function App() {
           <Route path="/countingunits/edit/:id" element={<EditCountingUnit />} />
 
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/checkout/confirm" element={<ConfirmCheckout />} />
 
         </Routes>
       </BrowserRouter>

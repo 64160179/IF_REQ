@@ -27,13 +27,6 @@ const Products = db.define('products',{
             len: [3, 100]
         }
     },
-    quantity:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate:{
-            notEmpty: true
-        }
-    },
     visible: {
         type: DataTypes.ENUM,
         values: ['visible', 'hidden'],
@@ -42,14 +35,11 @@ const Products = db.define('products',{
     },
     locationId:{
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: Locations,
             key: 'id'
         },
-        validate:{
-            notEmpty: true
-        }
     },
     countingunitId:{
         type: DataTypes.INTEGER,
@@ -62,6 +52,7 @@ const Products = db.define('products',{
             notEmpty: true
         }
     },
+    
 },{
     freezeTableName: true,
     timestamps: true

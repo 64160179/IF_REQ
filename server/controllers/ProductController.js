@@ -4,8 +4,6 @@ import Locations from "../models/LocationModel.js";
 import CountingUnits from "../models/CountingUnitModel.js";
 import CodeNumberModel from "../models/CodeNumberModel.js";
 import { Op } from "sequelize";
-import BuyIn from "../models/BuyInModel.js";
-import WareHouse from "../models/WareHouseModel.js";
 
 export const getProducts = async (req, res) => {
     // รับค่าการค้นหาจาก query string
@@ -46,7 +44,7 @@ export const getProducts = async (req, res) => {
             });
         } else {
             response = await Product.findAll({
-                attributes: ['id', 'uuid', 'code', 'name', 'quantity', 'visible', 'locationId', 'countingunitId'],
+                attributes: ['id', 'uuid', 'code', 'name', 'visible', 'locationId', 'countingunitId'],
                 include: [
                     {
                         model: CountingUnits,
@@ -86,7 +84,7 @@ export const getProductById = async (req, res) => {
         let response;
         if (req.role === "admin") {
             response = await Product.findOne({
-                attributes: ['id', 'uuid', 'code', 'name', 'quantity', 'visible', 'locationId', 'countingunitId'],
+                attributes: ['id', 'uuid', 'code', 'name', 'visible', 'locationId', 'countingunitId'],
                 where: {
                     id: product.id
                 },
@@ -103,7 +101,7 @@ export const getProductById = async (req, res) => {
             });
         } else {
             response = await Product.findOne({
-                attributes: ['id', 'uuid', 'code', 'name', 'unit', 'quantity', 'category'],
+                attributes: ['id', 'uuid', 'code', 'name', 'unit', 'category'],
                 where: {
                     [Op.and]: [{ id: product.id }, { userId: req.userId }], visible: 'visible'
                 },
@@ -130,7 +128,7 @@ export const getProductToDetail = async (req, res) => {
         let response;
         if (req.role === "admin") {
             response = await Product.findOne({
-                attributes: ['id', 'uuid', 'code', 'name', 'quantity', 'visible', 'locationId', 'countingunitId'],
+                attributes: ['id', 'uuid', 'code', 'name', 'visible', 'locationId', 'countingunitId'],
                 where: {
                     id: product.id
                 },
@@ -147,7 +145,7 @@ export const getProductToDetail = async (req, res) => {
             });
         } else {
             response = await Product.findOne({
-                attributes: ['id', 'uuid', 'code', 'name', 'unit', 'quantity', 'category'],
+                attributes: ['id', 'uuid', 'code', 'name', 'unit', 'category'],
                 where: {
                     [Op.and]: [{ id: product.id }, { userId: req.userId }], visible: 'visible'
                 },
@@ -197,7 +195,7 @@ const generateProductCode = async () => {
 
 
 export const createProduct = async (req, res) => {
-    const { name, countingunitId, quantity, locationId, visible } = req.body;
+    const { name, countingunitId, locationId, visible } = req.body;
     try {
         const existingProduct = await Product.findOne({
             where: {
@@ -217,17 +215,13 @@ export const createProduct = async (req, res) => {
 
         // ค้นหา id ของ location
         const locationData = await Locations.findByPk(locationId);
-        if (!locationData) {
-            return res.status(404).json({ msg: "กรุณาเลือกสถานที่จัดเก็บ !" });
-        }
 
         const code = await generateProductCode();
 
         await Product.create({
             code: code,
             name: name,
-            quantity: quantity,
-            locationId: locationData.id, // ใช้ id ของ location
+            locationId: locationData ? locationData.id : null, // ใช้ id ของ location
             countingunitId: countingUnitData.id, // ใช้ id ของ counting unit
             visible: visible
         });
@@ -246,7 +240,7 @@ export const updateProduct = async (req, res) => {
         });
         if (!product) return res.status(404).json({ msg: "ไม่พบข้อมูล !" });
 
-        const { name, countingunitId, quantity, locationId } = req.body;
+        const { name, countingunitId, locationId } = req.body;
 
         const existingProduct = await Product.findOne({
             where: {
@@ -273,7 +267,6 @@ export const updateProduct = async (req, res) => {
 
         await Product.update({
             name: name,
-            quantity: quantity,
             locationId: locationData.id, // ใช้ id ของ location
             countingunitId: countingUnitData.id, // ใช้ id ของ counting unit
         }, {

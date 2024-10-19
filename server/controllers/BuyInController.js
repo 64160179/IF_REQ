@@ -35,18 +35,8 @@ export const getBuyIn = async (req, res) => {
 };
 
 export const createBuyIn = async (req, res) => {
-    const { productId, doc_number, title, quantity, price, summary } = req.body;
+    const { productId, doc_number, title, quantity, } = req.body;
     try {
-        const existingDoc = await BuyIn.findOne({
-            where: {
-                doc_number: doc_number
-            }
-        });
-
-        if (existingDoc) {
-            return res.status(400).json({ msg: "เลขที่เอกสารนี้มีอยู่ในระบบแล้ว !" });
-        }
-
         const productData = await Product.findByPk(productId);
         if (!productData) {
             return res.status(404).json({ msg: "ไม่พบสินค้าในระบบ !" });

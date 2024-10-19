@@ -44,34 +44,46 @@ export const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers:{
-        reset: (state) => initialState ,
+        reset: (state) => initialState,
         updateUser: (state, action) => {
-            state.user = { ...state.user, ...action.payload };
+            state.user = action.payload;
         }
     },
     extraReducers: (builder) => {
         builder
+            .addCase(LoginUser.pending, (state) => {
+                state.isLoading = true;
+            })
             .addCase(LoginUser.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
                 state.user = action.payload;
             })
-            .addCase(LoginUser.pending, (state) => {
-                state.isLoading = true;
-            })
             .addCase(LoginUser.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.message = action.payload;
-                state.user = null;
+            })
+            .addCase(getMe.pending, (state) => {
+                state.isLoading = true;
             })
             .addCase(getMe.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
                 state.user = action.payload;
+            })
+            .addCase(getMe.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
             })
             .addCase(LogOut.fulfilled, (state) => {
                 state.user = null;
+                state.isSuccess = false;
+                state.isError = false;
+                state.message = "";
             });
-    },
+    }
 });
 
 export const { reset, updateUser } = authSlice.actions;

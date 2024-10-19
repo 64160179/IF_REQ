@@ -5,7 +5,6 @@ import Select from 'react-select'; // นำเข้า react-select
 
 const FormEditProduct = () => {
     const [name, setName] = useState('')
-    const [quantity, setQuantity] = useState('')
     const [countingUnit, setCountingUnit] = useState([]);
     const [location, setLocations] = useState([]);
     const [selectedCountingUnit, setSelectedCountingUnit] = useState('');
@@ -25,7 +24,6 @@ const FormEditProduct = () => {
                 const response = await axios.get(`http://localhost:5000/products/${id}`);
                 const product = response.data;
                 setName(product.name);
-                setQuantity(product.quantity);
                 setSelectedCountingUnit(product.countingunitId);
                 setSelectedLocation(product.locationId);
             } catch (error) {
@@ -75,7 +73,6 @@ const FormEditProduct = () => {
         try {
             await axios.patch(`http://localhost:5000/products/${id}`, {
                 name: name,
-                quantity: quantity,
                 locationId: selectedLocation,
                 countingunitId: selectedCountingUnit
             });
@@ -96,21 +93,20 @@ const FormEditProduct = () => {
                     <div className="content">
                         <form onSubmit={updateProduct}>
                             <p className="has-text-centered" style={{ color: 'red' }}>{msg}</p>
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                                <div className="field" style={{ flex: 1 }}>
-                                    <label className="label">ชื่อสินค้า</label>
-                                    <div className="control">
-                                        <input
-                                            className="input"
-                                            type="text"
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                            placeholder="กรุณากรอกชื่อสินค้า"
-                                            required
-                                        />
-                                    </div>
+                            <div className="field" style={{ flex: 1 }}>
+                                <label className="label">ชื่อสินค้า</label>
+                                <div className="control">
+                                    <input
+                                        className="input"
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        placeholder="กรุณากรอกชื่อสินค้า"
+                                        required
+                                    />
                                 </div>
-
+                            </div>
+                            <div style={{ display: 'flex', gap: '10px' }}>
                                 <div className="field" style={{ flex: 1 }}>
                                     <label className="label">หน่วยนับ</label>
                                     <div className="control">
@@ -127,24 +123,9 @@ const FormEditProduct = () => {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <br />
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                                <div className="field" style={{ flex: 1 }}>
-                                    <label className="label">จำนวน</label>
-                                    <div className="control">
-                                        <input
-                                            className="input"
-                                            type="number"
-                                            placeholder="กรุณากรอกจำนวน"
-                                            value={quantity}
-                                            onChange={(e) => setQuantity(e.target.value)}
-                                            min="1"
-                                            required
-                                        />
-                                    </div>
-                                </div>
+
+
 
                                 <div className="field" style={{ flex: 1 }}>
                                     <label className="label">สถานที่จัดเก็บ</label>
@@ -163,6 +144,7 @@ const FormEditProduct = () => {
                                     </div>
                                 </div>
                             </div>
+
 
                             <br />
                             <div className="field is-grouped">

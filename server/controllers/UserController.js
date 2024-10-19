@@ -7,6 +7,7 @@ export const getUsers = async (req, res) => {
     const search = req.query.search || ''; // ถ้าไม่มีค่า search จะใช้ค่าเริ่มต้นเป็นค่าว่าง
 
     try {
+        
         const response = await User.findAll({
             attributes: ['id', 'uuid', 'fname', 'lname', 'email', 'role'],
             where: {

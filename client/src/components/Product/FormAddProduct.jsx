@@ -9,14 +9,13 @@ const FormAddProduct = () => {
     const [selectedCountingUnit, setSelectedCountingUnit] = useState('');
     const [selectedLocation, setSelectedLocation] = useState('');
     const [name, setName] = useState('');
-    const [quantity, setQuantity] = useState('');
     const [msg, setMsg] = useState('');
+
     const navigate = useNavigate();
 
     const handleCancel = () => {
         // รีเซ็ตสถานะของฟอร์ม
         setName('');
-        setQuantity('');
         setSelectedLocation('');
         setSelectedCountingUnit('');
         setMsg('');
@@ -52,7 +51,6 @@ const FormAddProduct = () => {
         try {
             await axios.post("http://localhost:5000/products", {
                 name: name,
-                quantity: quantity,
                 locationId: selectedLocation,
                 countingunitId: selectedCountingUnit
             });
@@ -83,74 +81,53 @@ const FormAddProduct = () => {
                     <div className="content">
                         <form onSubmit={saveProduct}>
                             <p className="has-text-centered" style={{ color: 'red' }}>{msg}</p>
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                                <div className="field" style={{ flex: 1 }}>
-                                    <label className="label">ชื่อสินค้า</label>
-                                    <div className="control">
-                                        <input
-                                            className="input"
-                                            type="text"
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                            placeholder="กรุณากรอกชื่อสินค้า"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="field" style={{ flex: 1 }}>
-                                    <label className="label">จำนวน</label>
-                                    <div className="control">
-                                        <input
-                                            className="input"
-                                            type="number"
-                                            value={quantity}
-                                            onChange={(e) => {
-                                                const value = e.target.value;
-                                                // ตรวจสอบว่าค่าที่ใส่เป็นตัวเลขบวกหรือไม่
-                                                if (/^\d*$/.test(value)) {
-                                                    setQuantity(value);
-                                                }
-                                            }}
-                                            placeholder="กรุณากรอกจำนวน"
-                                            min="1"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="field" style={{ flex: 1 }}>
-                                    <label className="label">หน่วยนับ</label>
-                                    <div className="control">
-                                        <div className="is-fullwidth">
-                                            <Select
-                                                options={countingUnitOptions}
-                                                value={countingUnitOptions.find(option => option.value === selectedCountingUnit)}
-                                                onChange={(option) => setSelectedCountingUnit(option ? option.value : '')}
-                                                isClearable
-                                                placeholder="- เลือกหน่วยนับ -"
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <div className="field" style={{ flex: 1 }}>
+                                        <label className="label">ชื่อสินค้า</label>
+                                        <div className="control">
+                                            <input
+                                                className="input"
+                                                type="text"
+                                                value={name}
+                                                onChange={(e) => setName(e.target.value)}
+                                                placeholder="กรุณากรอกชื่อสินค้า"
+                                                required
                                             />
                                         </div>
                                     </div>
-                                </div>
+
+                                    <div className="field" style={{ flex: 1 }}>
+                                        <label className="label">หน่วยนับ</label>
+                                        <div className="control">
+                                            <div className="is-fullwidth">
+                                                <Select
+                                                    options={countingUnitOptions}
+                                                    value={countingUnitOptions.find(option => option.value === selectedCountingUnit)}
+                                                    onChange={(option) => setSelectedCountingUnit(option ? option.value : '')}
+                                                    isClearable
+                                                    placeholder="- เลือกหน่วยนับ -"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
 
 
-                                <div className="field" style={{ flex: 1 }}>
-                                    <label className="label">สถานที่จัดเก็บ</label>
-                                    <div className="control">
-                                        <div className="is-fullwidth">
-                                            <Select
-                                                options={locationOptions}
-                                                value={locationOptions.find(option => option.value === selectedLocation)}
-                                                onChange={(option) => setSelectedLocation(option ? option.value : '')}
-                                                isClearable
-                                                placeholder="- เลือกสถานที่จัดเก็บ -"
-                                            />
+                                    <div className="field" style={{ flex: 1 }}>
+                                        <label className="label">สถานที่จัดเก็บ</label>
+                                        <div className="control">
+                                            <div className="is-fullwidth">
+                                                <Select
+                                                    options={locationOptions}
+                                                    value={locationOptions.find(option => option.value === selectedLocation)}
+                                                    onChange={(option) => setSelectedLocation(option ? option.value : '')}
+                                                    isClearable
+                                                    placeholder="- เลือกสถานที่จัดเก็บ -"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <br/>
+                            <br />
                             <div className="field is-grouped">
                                 <div className="control">
                                     <button type="submit" className="button is-success" style={{ width: "120px" }}>
