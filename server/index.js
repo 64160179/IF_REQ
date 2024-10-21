@@ -13,6 +13,7 @@ import BuyInRoute from "./routes/BuyInRoute.js";
 import PayOutRoute from "./routes/PayOutRoute.js";
 import PayOutDetailRoute from "./routes/PayOutDetailRoute.js";
 import WareHouseRoute from "./routes/WareHouseRoute.js";
+import CartRoute from "./routes/CartRoute.js";
 dotenv.config();
 
 const app = express();
@@ -61,6 +62,7 @@ app.use(BuyInRoute);
 app.use(PayOutRoute);
 app.use(PayOutDetailRoute);
 app.use(WareHouseRoute);
+app.use(CartRoute);
 
 app.listen(process.env.APP_PORT, () => {
     console.log('Server up and running on port 5000 ...');

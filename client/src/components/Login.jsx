@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { LoginUser } from '../features/authSlice'
+import { LoginUser, reset } from '../features/authSlice'
 import '../../src/App.css'
 
 import video from '../assets/video.mp4'
@@ -31,6 +31,7 @@ const Login = () => {
     if (user || isSuccess) {
       navigate("/home");
     }
+    dispatch(reset());
   }, [user, isSuccess, dispatch, navigate]);
 
   const Auth = (e) => {

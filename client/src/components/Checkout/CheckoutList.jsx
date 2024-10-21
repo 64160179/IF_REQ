@@ -10,6 +10,8 @@ const CheckoutList = () => {
   const [currentDate, setCurrentDate] = useState('');
   const [msg, setMsg] = useState('');
   const [title, setTitle] = useState('');
+  const { user } = useSelector((state) => state.auth);
+  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
     const today = new Date();
@@ -71,6 +73,21 @@ const CheckoutList = () => {
     value: user.id,
     label: `${user.fname} ${user.lname}`,
   }));
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/cart/${user.id}`);
+        setCartItems(response.data);
+      } catch (error) {
+        console.error('Error fetching cart items:', error);
+      }
+    };
+
+    if (user) {
+      fetchCartItems();
+    }
+  }, [user]);
 
   return (
     <div>
@@ -137,6 +154,30 @@ const CheckoutList = () => {
           />
         </div>
         <br />
+        <table className="table is-bordered  is-fullwidth " style={{ width: '99%' }}>
+          <thead>
+            <tr>
+              <th className="has-text-centered" style={{ width: '100px' }}>ลำดับ</th>
+              <th className="has-text-centered" style={{ width: '150px' }}>รหัสสินค้า</th>
+              <th className="has-text-centered" >รายการ</th>
+              <th className="has-text-centered" >จำนวน</th>
+              <th className="has-text-centered" style={{ width: '150px' }}>หน่วยนับ</th>
+            </tr>
+
+          </thead>
+          <tbody>
+          {cartItems.map((item, index) => (
+            <tr key={item.id}>
+              <td className="has-text-centered">{index + 1}</td>
+              <td className="has-text-centered">{item.product.code} </td>
+              <td >{item.product.name}</td>
+              <td className="has-text-centered">{item.quantity}</td>
+              <td className="has-text-centered">{item.product.countingUnit ? item.product.countingUnit.name : 'No unit'}</td>
+            </tr>
+          ))}
+          </tbody>
+
+        </table>
         <button type="submit" className="button is-primary">บันทึก</button>
       </form>
     </div>

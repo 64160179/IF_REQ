@@ -11,6 +11,7 @@ Modal.setAppElement('#root');
 
 const ProductList = () => {
     const { user } = useSelector((state) => state.auth);
+    const auth = useSelector((state) => state.auth);
     const [products, setProducts] = useState([]);
     const [wareHouses, setWareHouses] = useState([]);
     const [countingUnits, setCountingUnits] = useState([]);
@@ -24,10 +25,12 @@ const ProductList = () => {
     });
     const [isCartHovered, setIsCartHovered] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [cartItems, setCartItems] = useState([]);
     const navigate = useNavigate();
+    const [totalQuantity, setTotalQuantity] = useState(0);
 
     const handleCheckout = () => {
-        navigate('/checkout', { state: { cart } });
+        navigate('/checkout');
     };
 
     const getProducts = useCallback(async () => {
@@ -88,8 +91,10 @@ const ProductList = () => {
             }
         };
 
-        fetchStorageLocations();
-    }, []);
+        if (user && user.role === 'admin') {
+            fetchStorageLocations();
+        }
+    }, [user]);
 
     const locationMap = storageLocations.reduce((map, location) => {
         map[location.id] = location.name;
@@ -147,73 +152,59 @@ const ProductList = () => {
         }
     };
 
-    const addToCart = (product) => {
-        const countingUnit = countingUnits.find(unit => unit.id === product.countingunitId)?.name || 'Unknown Unit';
-
-        setCart((prevCart) => {
-            const existingProduct = prevCart.find((item) => item.id === product.id);
-            let updatedCart;
-            if (existingProduct) {
-                updatedCart = prevCart.map((item) =>
-                    item.id === product.id
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                );
-            } else {
-                updatedCart = [...prevCart, { ...product, quantity: 1, countingUnit }];
-            }
-
-            localStorage.setItem('cart', JSON.stringify(updatedCart));
-            return updatedCart;
-        });
+    const fetchCartItems = async () => {
+        try {
+            const response = await axios.get(`http://localhost:5000/cart/${user.id}`);
+            setCartItems(response.data);
+            const total = response.data.reduce((sum, item) => sum + item.quantity, 0);
+            setTotalQuantity(total);
+        } catch (error) {
+            console.error('Error fetching cart items:', error);
+        }
     };
 
-    const handleQuantityChange = (productId, newQuantity) => {
-        const validQuantity = isNaN(newQuantity) || newQuantity <= 0 ? 1 : newQuantity;
+    const addToCart = async (productId) => {
+        try {
+            const response = await axios.post('http://localhost:5000/cart', {
+                userId: user.id,
+                productId: productId,
+                quantity: 1
+            });
+            console.log('Product added to cart:', response.data);
+            fetchCartItems(); // รีเฟรชข้อมูลตะกร้า
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+        }
+    };
 
-        setCart((prevCart) => {
-            const updatedCart = prevCart.map((item) =>
-                item.id === productId ? { ...item, quantity: validQuantity } : item
+    useEffect(() => {
+        if (user) {
+            fetchCartItems();
+        }
+    }, [user]);
+
+    const deleteCartItem = async (cartItemId, productName) => {
+        const result = await Swal.fire({
+            title: 'คุณยืนยันที่จะลบ ?',
+            text: `คุณยืนยันที่จะลบ ${productName} ในตะกร้าหรือไม่ ?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'ใช่, ลบเลย !',
+            cancelButtonText: 'ยกเลิก'
+        });
+
+        if (result.isConfirmed) {
+            await axios.delete(`http://localhost:5000/cart/${cartItemId}`);
+            fetchCartItems(); // รีเฟรชข้อมูลตะกร้า
+            Swal.fire(
+                'ลบแล้ว !',
+                `${productName} ถูกลบเรียบร้อยแล้ว.`,
+                'success'
             );
-            localStorage.setItem('cart', JSON.stringify(updatedCart)); // บันทึกค่าใน localStorage
-            return updatedCart;
-        });
+        }
     };
-
-    const increaseQuantity = (productId) => {
-        setCart((prevCart) => {
-            const updatedCart = prevCart.map((item) =>
-                item.id === productId ? { ...item, quantity: item.quantity + 1 } : item
-            );
-            localStorage.setItem('cart', JSON.stringify(updatedCart)); // บันทึกค่าใน localStorage
-            return updatedCart;
-        });
-    };
-
-    const decreaseQuantity = (productId) => {
-        setCart((prevCart) => {
-            const updatedCart = prevCart.map((item) =>
-                item.id === productId && item.quantity > 1
-                    ? { ...item, quantity: item.quantity - 1 }
-                    : item
-            );
-            localStorage.setItem('cart', JSON.stringify(updatedCart)); // บันทึกค่าใน localStorage
-            return updatedCart;
-        });
-    };
-
-    // ฟังก์ชันลบสินค้าจากตะกร้า
-    const removeFromCart = (productId) => {
-        setCart((prevCart) => {
-            const updatedCart = prevCart.filter((item) => item.id !== productId);
-            // อัปเดต localStorage
-            localStorage.setItem('cart', JSON.stringify(updatedCart));
-            return updatedCart;
-        });
-    };
-
-    const totalItemsInCart = cart.reduce((total, item) => total + item.quantity, 0);
-
 
     return (
         <div>
@@ -241,23 +232,21 @@ const ProductList = () => {
                         className="floating-cart-btn" style={{ marginRight: '10px' }}
                         onClick={() => setIsCartOpen(true)}
                     >
-                        🛒 {totalItemsInCart}
+                        🛒 {totalQuantity}
                     </button>
                     {isCartHovered && cart.length > 0 && (
                         <div className="cart-preview">
                             <ul>
-                                {cart.map((item) => (
+                                {cartItems.map((item,) => (
                                     <li key={item.id}>
-                                        <span className="item-name">{item.name}</span>
+                                        <span className="item-name">{item.product.name}</span>
                                         <span className="item-quantity">{item.quantity}</span>
-                                        <span className="item-unit">{item.countingUnit}</span>
                                     </li>
                                 ))}
                             </ul>
                         </div>
                     )}
                 </div>
-
 
                 {/* Modal ตะกร้าสินค้า */}
                 <Modal
@@ -266,7 +255,7 @@ const ProductList = () => {
                     className="cart-modal"
                     overlayClassName="cart-modal-overlay"
                 >
-                    <strong><h2>🛒 ตะกร้าสินค้า 🛒</h2></strong>
+                    <strong><h2>ตะกร้าสินค้า 🛒</h2></strong>
                     <br />
                     {cart.length === 0 ? (
                         <div style={{ textAlign: 'center' }}>
@@ -285,24 +274,25 @@ const ProductList = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {cart.map((item) => (
+                                {cartItems.map((item, index) => (
                                     <tr key={item.id} className="cart-item">
-                                        <td className="item-name">{item.name}</td>
+                                        <td className="item-name">{item.product.name}</td>
                                         <td className="item-quantity">
                                             <div className="quantity-controls">
-                                                <button className="decrease-btn" onClick={() => decreaseQuantity(item.id)} >-</button>
-                                                <input
-                                                    type="text"
-                                                    value={item.quantity}
-                                                    onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
-                                                />
-                                                <button className="increase-btn" onClick={() => increaseQuantity(item.id)} >+</button>
+                                                <button className="decrease-btn" >-</button>
+                                                {item.quantity}
+                                                <button className="increase-btn" >+</button>
                                             </div>
                                         </td>
-                                        <td className="item-quantity">{item.countingUnit}</td>
+                                        <td className="item-quantity">{item.product.countingUnit ? item.product.countingUnit.name : 'No unit'}</td>
                                         <td className="item-actions">
-                                            <button className="remove-btn" onClick={() => removeFromCart(item.id)}>ลบ</button>
+                                            <button className="remove-btn"
+                                                onClick={() => deleteCartItem(item.id)}
+                                            >
+                                                ลบ
+                                            </button>
                                         </td>
+
                                     </tr>
                                 ))}
                             </tbody>
@@ -324,6 +314,8 @@ const ProductList = () => {
                         </button>
                     </div>
                 </Modal>
+                {/* end modal */}
+
 
                 {/* search Admin */}
                 {user && user.role === "admin" && (
@@ -389,7 +381,7 @@ const ProductList = () => {
                                     <button
                                         className="button is-link"
                                         style={{ width: '80%', height: '30px' }}
-                                        onClick={() => addToCart(product)} // เรียกใช้ฟังก์ชัน addToCart
+                                        onClick={() => addToCart(product.id)}
                                         disabled={wareHouseData.quantity === 0} // disable ปุ่มเมื่อ quantity เป็น 0
                                     >
                                         + เพิ่ม
