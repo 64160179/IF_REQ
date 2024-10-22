@@ -6,6 +6,14 @@ import Products from "./ProductModel.js";
 const { DataTypes } = Sequelize;
 
 const PayOutDetail = db.define("payoutDetail", {
+    uuid:{
+        type: DataTypes.STRING,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+        validate:{
+            notEmpty: true
+        }
+    },
     payoutId: {
         type: DataTypes.INTEGER,
         allowNull: false,

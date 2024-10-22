@@ -50,11 +50,6 @@ const Login = () => {
             <h1 className='title'>เบิกวัสดุ - อุปกรณ์</h1>
             <p>คณะวิทยาการสารสนเทศ มหาวิทยาลัยบูรพา</p>
           </div>
-
-
-          <div className="footerDiv flex">
-            <span className='text'>*** สถานะของเว็บไซต์ ยังไม่ได้ทำ ***</span>
-          </div>
         </div>
 
         <div className="formDiv flex">

@@ -54,7 +54,7 @@ const Sidebar = () => {
             </NavLink>
           </li>
           <li className="custom-font-size">
-            <NavLink to={"/historys"} className="menu-item">
+            <NavLink to={"/histories"} className="menu-item">
               <FaHistory className="menu-secoundary" /> ประวัติการขอเบิก
             </NavLink>
           </li>

@@ -38,7 +38,6 @@ const SummaryList = () => {
     };
 
 
-
     const getWareHouseData = (productId) => {
         const wareHouse = wareHouses.find(wareHouse => wareHouse.productId === productId);
         return wareHouse ? { quantity: wareHouse.quantity, price: wareHouse.price, summary: wareHouse.summary } : { quantity: 0, price: 0, summary: 0 };
@@ -104,7 +103,7 @@ const SummaryList = () => {
                     </tr>
                     <tr>
                         {/* รายการ */}
-                        <th className="has-text-centered" style={{ width: '80px', backgroundColor: "rgb(255,255,204)" }}>รหัส</th>
+                        <th className="has-text-centered" style={{ width: '120px', backgroundColor: "rgb(255,255,204)" }}>รหัสสินค้า</th>
                         <th className="has-text-centered" style={{ width: '600px', backgroundColor: "rgb(255,255,204)" }}>ชื่อวัสดุ - อุปกรณ์</th>
                         {/* รับ */}
                         <th className="has-text-centered" style={{ color: 'blue', backgroundColor: "rgb(226,239,217)" }}>จำนวน</th>
@@ -123,7 +122,7 @@ const SummaryList = () => {
                 <tbody>
                     {currentProducts.map((product) => {
                         const buyInData = getBuyInData(product.id);
-                        // const payOutData = getPayOutData(product.id);
+
                         const wareHouseData = getWareHouseData(product.id);
                         return (
                             <tr key={product.uuid}>
@@ -137,7 +136,7 @@ const SummaryList = () => {
                                 {/* <td className="has-text-centered" style={{ color: 'blue' }}>{buyInData.price}</td>
                                 <td className="has-text-centered" style={{ color: 'blue' }}>{buyInData.summary}</td> */}
                                 {/* จ่าย */}
-                                <td className="has-text-centered"></td>
+                                <td className="has-text-centered">ยังไมไ่ด้ทำ</td>
                                 {/* <td className="has-text-centered">{payOutData.price}</td>
                                 <td className="has-text-centered">{payOutData.summary}</td> */}
                                 {/* คงเหลือ */}

@@ -49,6 +49,15 @@ export const addProductToCart = async (req, res) => {
             await existingCartItem.save();
             res.status(200).json({ msg: "อัปเดตจำนวนสินค้าในตะกร้าสำเร็จ !" });
         } else {
+            // ตรวจสอบจำนวนชนิดของสินค้าที่มีอยู่ในตะกร้าของผู้ใช้
+            const cartItemsCount = await Cart.count({
+                where: { userId: userData.id }
+            });
+
+            if (cartItemsCount >= 8) {
+                return res.status(400).json({ msg: "ไม่สามารถเพิ่มสินค้าที่แตกต่างกันเกิน 8 ชนิดในตะกร้าได้ !" });
+            }
+
             // ถ้าไม่มี ให้เพิ่มสินค้าเข้าไปในตะกร้า
             await Cart.create({
                 productId: productData.id,
@@ -57,6 +66,22 @@ export const addProductToCart = async (req, res) => {
             });
             res.status(201).json({ msg: "เพิ่มลงตะกร้าสำเร็จ !" });
         }
+    } catch (error) {
+        res.status(400).json({ msg: error.message });
+    }
+};
+
+export const updateProductInCart = async (req, res) => {
+    const { cartItemId, quantity } = req.body;
+    try {
+        const cartItem = await Cart.findByPk(cartItemId);
+        if (!cartItem) {
+            return res.status(404).json({ msg: "ไม่พบสินค้าในตะกร้า !" });
+        }
+
+        cartItem.quantity = quantity;
+        await cartItem.save();
+        res.status(200).json({ msg: "อัปเดตจำนวนสินค้าในตะกร้าสำเร็จ !" });
     } catch (error) {
         res.status(400).json({ msg: error.message });
     }

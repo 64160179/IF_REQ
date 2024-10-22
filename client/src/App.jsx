@@ -49,7 +49,7 @@ function App() {
           <Route path="/summary" element={<Summary />} />
           <Route path="/products/buyin" element={<BuyInProduct />} />
 
-          <Route path="/historys" element={<Historys />} />
+          <Route path="/histories" element={<Historys />} />
 
           <Route path="/locations" element={<Location />} />
           <Route path="/locations/add" element={<AddLocation />} />
@@ -60,7 +60,7 @@ function App() {
           <Route path="/countingunits/edit/:id" element={<EditCountingUnit />} />
 
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/checkout/confirm" element={<ConfirmCheckout />} />
+          <Route path="/checkout/confirm/:id" element={<ConfirmCheckout />} />
 
         </Routes>
       </BrowserRouter>

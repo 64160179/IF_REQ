@@ -11,7 +11,6 @@ Modal.setAppElement('#root');
 
 const ProductList = () => {
     const { user } = useSelector((state) => state.auth);
-    const auth = useSelector((state) => state.auth);
     const [products, setProducts] = useState([]);
     const [wareHouses, setWareHouses] = useState([]);
     const [countingUnits, setCountingUnits] = useState([]);
@@ -28,6 +27,7 @@ const ProductList = () => {
     const [cartItems, setCartItems] = useState([]);
     const navigate = useNavigate();
     const [totalQuantity, setTotalQuantity] = useState(0);
+    const [msg, setMsg] = useState('');
 
     const handleCheckout = () => {
         navigate('/checkout');
@@ -173,7 +173,36 @@ const ProductList = () => {
             console.log('Product added to cart:', response.data);
             fetchCartItems(); // รีเฟรชข้อมูลตะกร้า
         } catch (error) {
-            console.error('Error adding product to cart:', error);
+            if (error.response) {
+                await Swal.fire({
+                    title: 'เกิดข้อผิดพลาด!',
+                    text: error.response.data.msg,
+                    icon: 'error',
+                    confirmButtonText: 'ตกลง'
+                });
+            }
+        }
+    };
+
+    const updateCartItemQuantity = async (cartItemId, newQuantity) => {
+        try {
+            const response = await axios.patch('http://localhost:5000/cart', {
+                cartItemId: cartItemId,
+                quantity: newQuantity
+            });
+            console.log('Cart item quantity updated:', response.data);
+            fetchCartItems(); // รีเฟรชข้อมูลตะกร้า
+        } catch (error) {
+            console.error('Error updating cart item quantity:', error);
+        }
+    };
+
+    const handleQuantityChange = (cartItemId, newQuantity) => {
+        // ถ้า newQuantity เป็นค่าว่าง หรือ 0, ให้ตั้งค่าเป็น 1 อัตโนมัติ
+        if (newQuantity === '' || parseInt(newQuantity) === 0) {
+            updateCartItemQuantity(cartItemId, 1);
+        } else if (parseInt(newQuantity) >= 1) {
+            updateCartItemQuantity(cartItemId, parseInt(newQuantity));
         }
     };
 
@@ -186,7 +215,7 @@ const ProductList = () => {
     const deleteCartItem = async (cartItemId, productName) => {
         const result = await Swal.fire({
             title: 'คุณยืนยันที่จะลบ ?',
-            text: `คุณยืนยันที่จะลบ ${productName} ในตะกร้าหรือไม่ ?`,
+            text: `คุณยืนยันที่จะลบสินค้านี้ในตะกร้าหรือไม่ ?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -196,13 +225,17 @@ const ProductList = () => {
         });
 
         if (result.isConfirmed) {
-            await axios.delete(`http://localhost:5000/cart/${cartItemId}`);
-            fetchCartItems(); // รีเฟรชข้อมูลตะกร้า
-            Swal.fire(
-                'ลบแล้ว !',
-                `${productName} ถูกลบเรียบร้อยแล้ว.`,
-                'success'
-            );
+            try {
+                await axios.delete(`http://localhost:5000/cart/${cartItemId}`);
+                fetchCartItems(); // รีเฟรชข้อมูลตะกร้า
+                Swal.fire(
+                    'ลบแล้ว !',
+                    `ลบเรียบร้อยแล้ว.`,
+                    'success'
+                );
+            } catch (error) {
+                console.error('Error deleting cart item:', error);
+            }
         }
     };
 
@@ -257,10 +290,10 @@ const ProductList = () => {
                 >
                     <strong><h2>ตะกร้าสินค้า 🛒</h2></strong>
                     <br />
-                    {cart.length === 0 ? (
+                    {cartItems.length === 0 ? (
                         <div style={{ textAlign: 'center' }}>
-                            <strong><p>ไม่มีสินค้าในตะกร้า</p></strong>
-                            <br />
+                            <strong><p>❌ ไม่มีสินค้าในตะกร้า ❌</p></strong>
+
                         </div>
 
                     ) : (
@@ -274,14 +307,18 @@ const ProductList = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {cartItems.map((item, index) => (
+                                {cartItems.map((item) => (
                                     <tr key={item.id} className="cart-item">
                                         <td className="item-name">{item.product.name}</td>
                                         <td className="item-quantity">
                                             <div className="quantity-controls">
-                                                <button className="decrease-btn" >-</button>
-                                                {item.quantity}
-                                                <button className="increase-btn" >+</button>
+                                                <button className="decrease-btn" onClick={() => updateCartItemQuantity(item.id, item.quantity - 1)}>-</button>
+                                                <input
+                                                    type="text"
+                                                    value={item.quantity}
+                                                    onChange={(e) => handleQuantityChange(item.id, e.target.value)}  // รับค่าเป็น string ก่อน
+                                                />
+                                                <button className="increase-btn" onClick={() => updateCartItemQuantity(item.id, item.quantity + 1)}>+</button>
                                             </div>
                                         </td>
                                         <td className="item-quantity">{item.product.countingUnit ? item.product.countingUnit.name : 'No unit'}</td>
@@ -302,7 +339,7 @@ const ProductList = () => {
 
                     <div className="cart-footer">
                         {/* แสดงปุ่ม "ไปที่หน้า Checkout" เฉพาะเมื่อมีสินค้าในตะกร้า */}
-                        {cart.length > 0 && (
+                        {cartItems.length > 0 && (
                             <button
                                 className="checkout-btn"
                                 onClick={handleCheckout}
@@ -348,8 +385,8 @@ const ProductList = () => {
 
                         {user && user.role === "admin" && <th className="has-text-centered" style={{ width: '50px', backgroundColor: "rgb(255,255,204)" }}>BOX</th>}
                         <th className="has-text-centered" style={{ width: '50px', backgroundColor: "rgb(255,255,204)" }}>ลำดับ</th>
-                        <th className="has-text-centered" style={{ width: '80px', backgroundColor: "rgb(255,255,204)" }}>รหัส</th>
-                        <th style={{ width: '200px', backgroundColor: "rgb(255,255,204)" }}>ชื่อสินค้า</th>
+                        <th className="has-text-centered" style={{ width: '80px', backgroundColor: "rgb(255,255,204)" }}>รหัสสินค้า</th>
+                        <th className="has-text-centered" style={{ width: '200px', backgroundColor: "rgb(255,255,204)" }}>ชื่อวัสดุ - อุปกรณ์</th>
                         <th className="has-text-centered" style={{ width: '80px', backgroundColor: "rgb(226,239,217)" }}>คงเหลือ</th>
                         <th className="has-text-centered" style={{ width: '80px', backgroundColor: "rgb(226,239,217)" }}>หน่วยนับ</th>
                         <th className="has-text-centered" style={{ width: '120px', backgroundColor: "rgb(252,225,214)" }}>เพิ่มลงตระกร้า</th>

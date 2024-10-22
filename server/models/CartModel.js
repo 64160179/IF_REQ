@@ -31,9 +31,7 @@ const Cart = db.define('cart', {
     quantity: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        validate: {
-            notEmpty: true,
-        }
+
     },
 }, {
     freezeTableName: true,
