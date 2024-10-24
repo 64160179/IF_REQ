@@ -2,6 +2,7 @@ import Cart from "../models/CartModel.js";
 import Product from "../models/ProductModel.js";
 import Users from "../models/UserModel.js";
 import CountingUnit from "../models/CountingUnitModel.js";
+import WareHouses from "../models/WareHouseModel.js";
 
 export const getUserCart = async (req, res) => {
     const { userId } = req.params;
@@ -38,13 +39,24 @@ export const addProductToCart = async (req, res) => {
             return res.status(404).json({ msg: "ไม่พบข้อมูลผู้ใช้ในระบบ !" });
         }
 
+        // ตรวจสอบจำนวนสินค้าในคลัง
+        const warehouseItem = await WareHouses.findOne({ where: { productId: productData.id } });
+        if (!warehouseItem) {
+            return res.status(404).json({ msg: "ไม่พบข้อมูลสินค้าในคลัง !" });
+        }
+
         // ตรวจสอบว่ามี productId ที่เหมือนกันในตะกร้าหรือไม่
         const existingCartItem = await Cart.findOne({
             where: { productId: productData.id, userId: userData.id }
         });
 
         if (existingCartItem) {
-            // ถ้ามี ให้ทำการอัปเดต cart.quantity โดยการบวกเพิ่มไปอีก 1
+            // ตรวจสอบว่าจำนวนที่ต้องการเพิ่มไม่เกินจำนวนในคลัง
+            if (existingCartItem.quantity + quantity > warehouseItem.quantity) {
+                return res.status(400).json({ msg: "จำนวนสินค้าที่คุณต้องการเกินจำนวนที่มีในคลัง !" });
+            }
+
+            // ถ้ามี ให้ทำการอัปเดต cart.quantity โดยการบวกเพิ่มไปอีก
             existingCartItem.quantity += quantity;
             await existingCartItem.save();
             res.status(200).json({ msg: "อัปเดตจำนวนสินค้าในตะกร้าสำเร็จ !" });
@@ -56,6 +68,11 @@ export const addProductToCart = async (req, res) => {
 
             if (cartItemsCount >= 8) {
                 return res.status(400).json({ msg: "ไม่สามารถเพิ่มสินค้าที่แตกต่างกันเกิน 8 ชนิดในตะกร้าได้ !" });
+            }
+
+            // ตรวจสอบว่าจำนวนที่ต้องการเพิ่มไม่เกินจำนวนในคลัง
+            if (quantity > warehouseItem.quantity) {
+                return res.status(400).json({ msg: "จำนวนสินค้าที่คุณต้องการเกินจำนวนที่มีในคลัง !" });
             }
 
             // ถ้าไม่มี ให้เพิ่มสินค้าเข้าไปในตะกร้า

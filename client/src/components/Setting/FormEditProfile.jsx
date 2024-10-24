@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../features/authSlice";
+import Swal from 'sweetalert2';
 
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { MdError, MdCheckCircle } from 'react-icons/md'; // จาก Material Design
@@ -105,7 +106,12 @@ const FormEditProfile = () => {
             navigate("/home");
         } catch (error) {
             if (error.response) {
-                setMsg(error.response.data.msg);
+                await Swal.fire({
+                    title: 'เกิดข้อผิดพลาด!',
+                    text: error.response.data.msg,
+                    icon: 'error',
+                    confirmButtonText: 'ตกลง'
+                });
             }
         }
     };

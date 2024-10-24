@@ -6,7 +6,7 @@ import '../../App.css'
 const SummaryList = () => {
     const [products, setProducts] = useState([]);
     const [buyIns, setBuyIns] = useState([]);
-
+    const [payOuts, setPayOuts] = useState([]);
     const [wareHouses, setWareHouses] = useState([]);
     const [currentDate, setCurrentDate] = useState('');
     const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -16,11 +16,11 @@ const SummaryList = () => {
     const fetchData = useCallback(async () => {
         const productsResponse = await axios.get(`http://localhost:5000/products?search=${search}`);
         const buyInsResponse = await axios.get('http://localhost:5000/buyins');
-
+        const payOutsDetailResponse = await axios.get('http://localhost:5000/payout/details');
         const wareHousesResponse = await axios.get('http://localhost:5000/warehouses');
         setProducts(productsResponse.data);
         setBuyIns(buyInsResponse.data);
-
+        setPayOuts(payOutsDetailResponse.data);
         setWareHouses(wareHousesResponse.data);
     }, [search]);
 
@@ -37,6 +37,10 @@ const SummaryList = () => {
         return buyIn ? { quantity: parseFloat(buyIn.quantity).toFixed(2), price: buyIn.price, summary: buyIn.summary } : { quantity: 0, price: 0, summary: 0 };
     };
 
+    const getPayOutData = (productId) => {
+        const payOut = payOuts.find(payOut => payOut.productId === productId);
+        return payOut ? { quantity: parseFloat(payOut.quantity_approved).toFixed(2), price: payOut.price, summary: payOut.summary } : { quantity: 0, price: 0, summary: 0 };
+    };
 
     const getWareHouseData = (productId) => {
         const wareHouse = wareHouses.find(wareHouse => wareHouse.productId === productId);
@@ -122,7 +126,7 @@ const SummaryList = () => {
                 <tbody>
                     {currentProducts.map((product) => {
                         const buyInData = getBuyInData(product.id);
-
+                        const payOutData = getPayOutData(product.id);
                         const wareHouseData = getWareHouseData(product.id);
                         return (
                             <tr key={product.uuid}>
@@ -136,7 +140,7 @@ const SummaryList = () => {
                                 {/* <td className="has-text-centered" style={{ color: 'blue' }}>{buyInData.price}</td>
                                 <td className="has-text-centered" style={{ color: 'blue' }}>{buyInData.summary}</td> */}
                                 {/* จ่าย */}
-                                <td className="has-text-centered">ยังไมไ่ด้ทำ</td>
+                                <td className="has-text-centered">{payOutData.quantity}</td>
                                 {/* <td className="has-text-centered">{payOutData.price}</td>
                                 <td className="has-text-centered">{payOutData.summary}</td> */}
                                 {/* คงเหลือ */}

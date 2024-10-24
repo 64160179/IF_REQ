@@ -13,7 +13,7 @@ export const getPayOuts = async (req, res) => {
         let response;
         if (req.role === "admin") {
             response = await PayOut.findAll({
-                attributes: ['id', 'uuid', 'userId', 'doc_number', 'title', 'doc_date', 'status'],
+                attributes: ['id', 'userId', 'doc_number', 'title', 'doc_date', 'status'],
                 include: [
                     {
                         model: User,
@@ -38,7 +38,7 @@ export const getPayOuts = async (req, res) => {
             });
         } else {
             response = await PayOut.findAll({
-                attributes: ['id', 'uuid', 'userId', 'doc_number', 'title', 'doc_date', 'status'],
+                attributes: ['id', 'userId', 'doc_number', 'title', 'doc_date', 'status'],
                 where: {
                     userId: req.userId,
                     [Op.or]: [
@@ -65,12 +65,12 @@ export const getPayOutById = async (req, res) => {
     try {
         const payout = await PayOut.findOne({
             where: {
-                uuid: req.params.id
+                id: req.params.id
             },
         });
         if (!payout) return res.status(404).json({ msg: "ไม่พบข้อมูล !" });
         const response = await PayOut.findOne({
-            attributes: ['id', 'uuid', 'userId', 'doc_number', 'title', 'doc_date', 'status'],
+            attributes: ['id', 'userId', 'doc_number', 'title', 'doc_date', 'status'],
             where: {
                 id: payout.id
             },
@@ -169,19 +169,13 @@ export const createPayOut = async (req, res) => {
 
         await PayOutDetail.bulkCreate(payoutDetails, { transaction });
 
-        // // อัปเดต warehouse.quantity
-        // for (const detail of payoutDetails) {
-        //     const warehouseItem = await Warehouse.findOne({ where: { productId: detail.productId } });
-        //     if (warehouseItem) {
-        //         warehouseItem.quantity -= detail.quantity;
-        //         await warehouseItem.save({ transaction });
-        //     } else {
-        //         throw new Error(`ไม่พบสินค้าในคลังสำหรับ productId: ${detail.productId}`);
-        //     }
-        // }
+        // ลบรายการในตาราง cart ที่ตรงกับ userId ของผู้ใช้ที่ถูกเลือก
+        await Cart.destroy({ where: { userId: userData.id }, transaction });
 
-        // ลบรายการในตาราง cart ที่ตรงกับ userId
-        await Cart.destroy({ where: { userId: userId }, transaction });
+        // ลบรายการในตาราง cart ที่ตรงกับ userId ของ admin
+        if (requestingUser.role === 'admin') {
+            await Cart.destroy({ where: { userId: req.userId }, transaction });
+        }
         
         await transaction.commit();
         res.status(201).json({ msg: 'สร้าง PayOut สำเร็จ' });

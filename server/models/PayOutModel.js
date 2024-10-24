@@ -5,14 +5,6 @@ import Users from "./UserModel.js";
 const { DataTypes } = Sequelize;
 
 const PayOut = db.define('payout', {
-    uuid:{
-        type: DataTypes.STRING,
-        defaultValue: DataTypes.UUIDV4,
-        allowNull: false,
-        validate:{
-            notEmpty: true
-        }
-    },
     userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -45,7 +37,7 @@ const PayOut = db.define('payout', {
     },
     status: {
         type: DataTypes.ENUM,
-        values: ['pending', 'approved', 'rejected'],
+        values: ['pending', 'approved'],
         defaultValue: 'pending',
         allowNull: false,
     },

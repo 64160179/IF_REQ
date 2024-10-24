@@ -24,11 +24,43 @@ const ProductDetailList = () => {
     <div>
       <br />
       <h1 className="title">รายงานวัสดุคงคลัง</h1>
-      <div className="product-details">
-        <p>ชื่อสินค้า : ปากกาแดง</p>
-        <p>รหัส : A001</p>
-        <p>หน่วยนับ : อัน</p>
-        <p>สถานที่ : ห้องเรียน</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '99%' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <p style={{ margin: 0 }}>ชื่อวัสดุ : </p>
+          <input
+            type="text"
+            className="input has-text-centered"
+            style={{ width: '70%', height: '35px', marginLeft: '10px' }}
+            readOnly
+          />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <p style={{ margin: 0 }}>รหัสสินค้า : </p>
+          <input
+            type="text"
+            className="input has-text-centered"
+            style={{ width: '70%', height: '35px', marginLeft: '10px' }}
+            readOnly
+          />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <p style={{ margin: 0 }}>หน่วยนับ : </p>
+          <input
+            type="text"
+            className="input has-text-centered"
+            style={{ width: '70%', height: '35px', marginLeft: '10px' }}
+            readOnly
+          />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <p style={{ margin: 0 }}>สถานที่ : </p>
+          <input
+            type="text"
+            className="input has-text-centered"
+            style={{ width: '70%', height: '35px', marginLeft: '10px' }}
+            readOnly
+          />
+        </div>
       </div>
       <div>
         <br />

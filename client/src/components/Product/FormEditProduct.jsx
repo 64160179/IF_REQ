@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import Select from 'react-select'; // นำเข้า react-select
+import Swal from 'sweetalert2';
 
 const FormEditProduct = () => {
     const [name, setName] = useState('')
@@ -79,7 +80,12 @@ const FormEditProduct = () => {
             navigate("/products");
         } catch (error) {
             if (error.response) {
-                setMsg(error.response.data.msg);
+                await Swal.fire({
+                    title: 'เกิดข้อผิดพลาด!',
+                    text: error.response.data.msg,
+                    icon: 'error',
+                    confirmButtonText: 'ตกลง'
+                });
             }
         }
     };
@@ -92,7 +98,6 @@ const FormEditProduct = () => {
                 <div className="card-content">
                     <div className="content">
                         <form onSubmit={updateProduct}>
-                            <p className="has-text-centered" style={{ color: 'red' }}>{msg}</p>
                             <div className="field" style={{ flex: 1 }}>
                                 <label className="label">ชื่อสินค้า</label>
                                 <div className="control">

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 const FromAddLocation = () => {
   const [locationName, setLocationName] = useState("");
@@ -23,20 +24,24 @@ const FromAddLocation = () => {
       navigate("/locations");
     } catch (error) {
       if (error.response) {
-        setMsg(error.response.data.msg);
+        await Swal.fire({
+          title: 'เกิดข้อผิดพลาด!',
+          text: error.response.data.msg,
+          icon: 'error',
+          confirmButtonText: 'ตกลง'
+        });
       }
     }
-  }
+  };
 
   return (
-<div>
+    <div>
       <br />
       <h1 className="title">เพิ่มสถานที่จัดเก็บใหม่</h1>
       <div className="card is-shadowless">
         <div className="card-content">
           <div className="content">
             <form onSubmit={saveLocation}>
-              <p className="has-text-centered" style={{ color: 'red' }}>{msg}</p>
               <div className="field">
                 <label className="label">ตำแหน่งสถานที่จัดเก็บ</label>
                 <div className="control">

@@ -80,8 +80,6 @@ const HistoryList = () => {
                 return { color: 'blue', text: 'รอการอนุมัติ' };
             case 'approved':
                 return { color: 'green', text: 'อนุมัติแล้ว' };
-            case 'rejected':
-                return { color: 'red', text: 'ไม่อนุมัติ' };
             default:
                 return { color: 'black', text: status };
         }
@@ -142,8 +140,12 @@ const HistoryList = () => {
                             <tr key={history.id}>
                                 <td className="has-text-centered">{history.id}</td>
                                 {user && user.role === "admin" ? (
-                                    <td className="has-text-centered" style={{ textDecoration: "underline", textDecorationColor: "#0000CC" }}>
-                                        <Link to={`/checkout/confirm/${history.uuid}`} style={{ color: '#0000CC' }}>{history.doc_number}</Link>
+                                    <td className="has-text-centered" style={{ textDecoration: history.status === "pending" ? "underline" : "none", textDecorationColor: "#0000CC" }}>
+                                        {history.status === "approved" ? (
+                                            <span style={{ color: 'gray', cursor: 'not-allowed' }}>{history.doc_number}</span>
+                                        ) : (
+                                            <Link to={`/checkout/confirm/${history.id}`} style={{ color: '#0000CC' }}>{history.doc_number}</Link>
+                                        )}
                                     </td>
                                 ) : (
                                     <td className="has-text-centered">{history.doc_number}</td>
