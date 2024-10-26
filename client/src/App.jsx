@@ -29,6 +29,8 @@ import EditCountingUnit from './pages/CountingUnit/EditCountingUnit.jsx';
 import Checkout from './pages/Checkout/Checkout.jsx';
 import ConfirmCheckout from './pages/Checkout/ConfirmCheckout.jsx';
 
+import ConfirmCheckoutPDF from './components/PDF/ConfirmCheckoutPDF.jsx'
+
 function App() {
   return (
     <div>
@@ -61,6 +63,8 @@ function App() {
 
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/checkout/confirm/:id" element={<ConfirmCheckout />} />
+
+          <Route path="/pdf/confirmcheckout/:id" element={<ConfirmCheckoutPDF />} />
 
         </Routes>
       </BrowserRouter>

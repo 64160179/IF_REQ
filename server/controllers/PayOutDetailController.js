@@ -14,7 +14,7 @@ export const getPayOutDetailsByIdToConfirm = async (req, res) => {
             include: [
                 {
                     model: PayOutDetail,
-                    attributes: ['id', 'payoutId', 'productId', 'quantity', 'note'],
+                    attributes: ['id', 'payoutId', 'productId', 'quantity', 'quantity_approved', 'userId_approved', 'note'],
                     include: [
                         {
                             model: Products,
@@ -23,11 +23,17 @@ export const getPayOutDetailsByIdToConfirm = async (req, res) => {
                                 model: CountingUnits,
                                 attributes: ['name']
                             }
+                        },
+                        {
+                            model: Users,
+                            as: 'approvedBy', // Use the alias defined in the PayOutDetail association
+                            attributes: ['id', 'fname', 'lname']
                         }
                     ]
                 },
                 {
                     model: Users,
+                    as: 'user', // Use the alias defined for the creator of the payout
                     attributes: ['id', 'fname', 'lname']
                 }
             ]
@@ -39,9 +45,11 @@ export const getPayOutDetailsByIdToConfirm = async (req, res) => {
 
         res.status(200).json(payOutData);
     } catch (error) {
+        console.error('Error retrieving PayOut details:', error);
         res.status(400).json({ msg: error.message });
     }
 };
+
 
 export const getPayOutDetailByIdToSummary = async (req, res) => {
     try {
@@ -80,18 +88,18 @@ export const getPayOutDetailByIdToSummary = async (req, res) => {
 };
 
 export const approvePayOutDetails = async (req, res) => {
-    const { quantityApprove, notes } = req.body;
+    const { quantityApprove, notes, userId } = req.body; // Receive userId from request
 
     try {
-        // อัปเดตข้อมูลในฐานข้อมูลตาม payoutDetail.id
-        for (const id in quantityApprove) {
+        // Update PayOutDetail records based on the quantityApprove object
+        for (const id of Object.keys(quantityApprove)) {
             const quantity = quantityApprove[id];
             const note = notes[id] || null;
 
-            console.log(`Updating PayOutDetail with id: ${id}, quantity_approve: ${quantity}, note: ${note}`);
+            console.log(`Updating PayOutDetail with id: ${id}, quantity_approved: ${quantity}, note: ${note}, userId_approved: ${userId}`);
 
             const [updated] = await PayOutDetail.update(
-                { quantity_approved: quantity, note: note },
+                { quantity_approved: quantity, note: note, userId_approved: userId }, // Ensure userId_approved is being set
                 { where: { id } }
             );
 
@@ -100,34 +108,33 @@ export const approvePayOutDetails = async (req, res) => {
             }
         }
 
-        // ดึง payoutId และ productId จาก PayOutDetail
+        // Retrieve payoutId and productId from updated PayOutDetails
         const payoutDetails = await PayOutDetail.findAll({
-            where: {
-                id: Object.keys(quantityApprove)
-            },
+            where: { id: Object.keys(quantityApprove) },
             attributes: ['payoutId', 'productId', 'quantity_approved']
         });
 
+        // Get unique payoutIds for updating status
         const uniquePayoutIds = [...new Set(payoutDetails.map(detail => detail.payoutId))];
 
-        // อัปเดตสถานะในตาราง payout จาก pending เป็น approved
-        for (const payoutId of uniquePayoutIds) {
-            await PayOut.update(
-                { status: 'approved' },
-                { where: { id: payoutId } }
-            );
-        }
+        // Update status in the PayOut table from pending to approved
+        await PayOut.update(
+            { status: 'approved' },
+            { where: { id: uniquePayoutIds } } // Update all matching payouts at once
+        );
 
-        // อัปเดต warehouse.quantity
+        // Update warehouse quantities
         for (const detail of payoutDetails) {
             const warehouseItem = await WareHouses.findOne({ where: { productId: detail.productId } });
 
             if (warehouseItem) {
                 const newQuantity = warehouseItem.quantity - detail.quantity_approved;
+
                 await WareHouses.update(
                     { quantity: newQuantity },
                     { where: { productId: detail.productId } }
                 );
+
                 console.log(`Updated WareHouse for productId: ${detail.productId}, new quantity: ${newQuantity}`);
             } else {
                 console.log(`No WareHouse item found for productId: ${detail.productId}`);

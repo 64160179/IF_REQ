@@ -127,9 +127,6 @@ const CheckoutList = () => {
         <br />
         <p style={{ marginLeft: '65rem' }}>วันที่ : {currentDate}</p>
         <br />
-        <p className="has-text-centered" style={{ marginBottom: '10px' }}>
-          <strong style={{ color: 'red' }}>{msg}</strong>
-        </p>
         <div style={{ display: 'flex', alignItems: 'center', marginLeft: '4rem', width: '100%' }}>
           <p style={{ margin: 0 }}>ข้าพเจ้า</p>
           {auth.user && auth.user.role === 'admin' ? (
@@ -193,15 +190,23 @@ const CheckoutList = () => {
 
           </thead>
           <tbody>
-            {cartItems.map((item, index) => (
-              <tr key={item.id}>
-                <td className="has-text-centered">{index + 1}</td>
-                <td className="has-text-centered">{item.product.code} </td>
-                <td >{item.product.name}</td>
-                <td className="has-text-centered">{item.quantity}</td>
-                <td className="has-text-centered">{item.product.countingUnit ? item.product.countingUnit.name : 'No unit'}</td>
+            {cartItems.length > 0 ? (
+              cartItems.map((item, index) => (
+                <tr key={item.id}>
+                  <td className="has-text-centered">{index + 1}</td>
+                  <td className="has-text-centered">{item.product.code}</td>
+                  <td>{item.product.name}</td>
+                  <td className="has-text-centered">{item.quantity}</td>
+                  <td className="has-text-centered">{item.product.countingUnit ? item.product.countingUnit.name : 'No unit'}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td className="has-text-centered" colSpan="5" style={{ color: 'red', fontSize: '18px' }}>
+                  ไม่มีสินค้าในตะกร้า
+                </td>
               </tr>
-            ))}
+            )}
           </tbody>
 
         </table>

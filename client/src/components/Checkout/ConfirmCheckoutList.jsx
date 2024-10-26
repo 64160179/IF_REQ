@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from 'react-router-dom';
 import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 
 const ConfirmCheckoutList = () => {
+    const auth = useSelector((state) => state.auth);
     const [docNumber, setDocNumber] = useState('');
     const [status, setStatus] = useState('');
     const [docDate, setDocDate] = useState('');
@@ -69,19 +71,31 @@ const ConfirmCheckoutList = () => {
 
     const handleSubmit = async () => {
         try {
-            await axios.patch('http://localhost:5000/payout/approve', {
+            const userId = auth.user.id; // Get userId from authentication context
+    
+            if (!userId) {
+                throw new Error("User ID is not available.");
+            }
+    
+            const response = await axios.patch('http://localhost:5000/payout/approve', {
                 quantityApprove,
-                notes
+                notes,
+                userId // Ensure userId is included here
             });
-            setMsg('บันทึกข้อมูลสำเร็จ');
-            navigate("/histories");
+    
+            if (response.status === 200) {
+                setMsg('บันทึกข้อมูลสำเร็จ');
+                navigate("/histories");
+            }
         } catch (error) {
             if (error.response) {
                 setMsg(error.response.data.msg);
+            } else {
+                setMsg('เกิดข้อผิดพลาด');
             }
         }
     };
-
+    
     const handleConfirmSubmit = () => {
         Swal.fire({
             title: 'ยืนยันการอนุมัติ',
@@ -200,36 +214,7 @@ const ConfirmCheckoutList = () => {
                             </td>
                         </tr>
                     ))}
-                    {/* <tr>
-                        <td colSpan="3" className="has-text-centered">
-                            <br />
-                            (ลงชื่อ) .............................................................. ผู้เบิก/ผู้รับ
-                            <br />
-                            <p>( {user.fname} {user.lname} )</p>
-                            <p>{docDate}</p>
-                        </td>
-                        <td colSpan="3" className="has-text-centered">
-                            <br />
-                            (ลงชื่อ) .............................................................. ผู้จ่ายของ
-                            <br />
-                            ( {auth.user?.fname} {auth.user?.lname} )
-                            <br />
-                            <p> {currentDate}</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colSpan="6" className="has-text-centered">
-                            <br />
-                            เจ้าหน้าที่พัสดุได้ตรวจและหักจำนวนแล้ว
-                            <br />
-                            <br />
-                            <p>(ลงชื่อ) ............... <span>{auth.user?.fname} {auth.user?.lname} </span> .....................</p>
-                            <p> {currentDate}</p>
-                        </td>
-                    </tr> */}
-
                 </tbody>
-
             </table>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '99%' }}>
                 <Link to={'/histories'}

@@ -10,7 +10,6 @@ const FormAddProduct = () => {
     const [selectedLocation, setSelectedLocation] = useState('');
     const [name, setName] = useState('');
     const [msg, setMsg] = useState('');
-
     const navigate = useNavigate();
 
     const handleCancel = () => {

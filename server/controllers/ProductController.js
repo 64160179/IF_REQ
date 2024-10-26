@@ -119,42 +119,23 @@ export const getProductById = async (req, res) => {
 
 export const getProductToDetail = async (req, res) => {
     try {
-        const product = await Product.findOne({
+        const response = await Product.findOne({
+            attributes: ['id', 'uuid', 'code', 'name', 'locationId', 'countingunitId'],
             where: {
                 uuid: req.params.id
-            }
+            },
+            include: [
+                {
+                    model: Locations,
+                    attributes: ['name']
+                },
+                {
+                    model: CountingUnits,
+                    attributes: ['name']
+                }
+            ]
         });
-        if (!product) return res.status(404).json({ msg: "ไม่พบข้อมูล !" });
-        let response;
-        if (req.role === "admin") {
-            response = await Product.findOne({
-                attributes: ['id', 'uuid', 'code', 'name', 'visible', 'locationId', 'countingunitId'],
-                where: {
-                    id: product.id
-                },
-                include: [
-                    {
-                        model: Locations,
-                        attributes: ['name']
-                    },
-                    {
-                        model: CountingUnits,
-                        attributes: ['name']
-                    }
-                ]
-            });
-        } else {
-            response = await Product.findOne({
-                attributes: ['id', 'uuid', 'code', 'name', 'unit', 'category'],
-                where: {
-                    [Op.and]: [{ id: product.id }, { userId: req.userId }], visible: 'visible'
-                },
-                include: [{
-                    model: User,
-                    attributes: ['name', 'email']
-                }]
-            });
-        }
+
         res.status(200).json(response);
     } catch (error) {
         res.status(500).json({ msg: error.message });

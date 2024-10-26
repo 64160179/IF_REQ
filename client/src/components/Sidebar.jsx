@@ -70,7 +70,7 @@ const Sidebar = () => {
               </li>
               <li className="custom-font-size">
                 <NavLink to={"/users"} className="menu-item">
-                  <IoPerson className="menu-secoundary" /> จัดการชื่อผู้ใช้
+                  <IoPerson className="menu-secoundary" /> จัดการรายชื่อผู้ใช้
                 </NavLink>
               </li>
               <li className="custom-font-size">

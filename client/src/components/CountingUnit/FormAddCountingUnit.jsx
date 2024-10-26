@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 const FormAddCountingUnit = () => {
   const [countingUnitName, setCountingUnitName] = useState("");
@@ -23,7 +24,12 @@ const FormAddCountingUnit = () => {
       navigate("/countingunits");
     } catch (error) {
       if (error.response) {
-        setMsg(error.response.data.msg);
+        await Swal.fire({
+          title: 'เกิดข้อผิดพลาด!',
+          text: error.response.data.msg,
+          icon: 'error',
+          confirmButtonText: 'ตกลง'
+        });
       }
     }
   };

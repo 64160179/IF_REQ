@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
 
 const HistoryList = () => {
     const [history, setHistory] = useState([]);
@@ -11,6 +11,7 @@ const HistoryList = () => {
     const [msg, setMsg] = useState('');
     const { user } = useSelector((state) => state.auth);
     const [search, setSearch] = useState('');
+    const navigate = useNavigate();
 
     // คำนวณรายการวัสดุที่จะแสดงในหน้าปัจจุบัน
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -68,7 +69,6 @@ const HistoryList = () => {
         fetchUsers();
     }, [fetchHistory]);
 
-
     const getUserName = (userId) => {
         const user = users.find(user => user.id === userId);
         return user ? `${user.fname} ${user.lname}` : 'Unknown User';
@@ -89,7 +89,9 @@ const HistoryList = () => {
         setSearch(e.target.value); // อัปเดตค่าการค้นหาเมื่อผู้ใช้กรอกข้อมูล
     };
 
-
+    const handleButtonClick = (id) => {
+        navigate(`/pdf/confirmcheckout/${id}`);
+    };
 
     return (
         <div>
@@ -154,7 +156,13 @@ const HistoryList = () => {
                                 <td className="has-text-centered">{history.doc_date}</td>
                                 <td>{getUserName(history.userId)}</td>
                                 <td className="has-text-centered" style={{ color: statusStyle.color }}>{statusStyle.text}</td>
-                                <td>pdf</td>
+                                <td className="has-text-centered">
+                                    {history.status === "approved" ? (
+                                        <button onClick={() => handleButtonClick(history.id)}>📑 ใบเบิก</button>
+                                    ) : (
+                                        <span></span>
+                                    )}
+                                </td>
                             </tr>
                         );
                     })}
