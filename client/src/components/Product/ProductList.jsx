@@ -193,10 +193,17 @@ const ProductList = () => {
             console.log('Cart item quantity updated:', response.data);
             fetchCartItems(); // รีเฟรชข้อมูลตะกร้า
         } catch (error) {
-            console.error('Error updating cart item quantity:', error);
+            if (error.response) {
+                await Swal.fire({
+                    title: 'เกิดข้อผิดพลาด!',
+                    text: error.response.data.msg,
+                    icon: 'error',
+                    confirmButtonText: 'ตกลง'
+                });
+            }
         }
     };
-
+    
     const handleQuantityChange = (cartItemId, newQuantity) => {
         // ถ้า newQuantity เป็นค่าว่าง หรือ 0, ให้ตั้งค่าเป็น 1 อัตโนมัติ
         if (newQuantity === '' || parseInt(newQuantity) === 0) {

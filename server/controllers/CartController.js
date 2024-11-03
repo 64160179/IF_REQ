@@ -96,6 +96,17 @@ export const updateProductInCart = async (req, res) => {
             return res.status(404).json({ msg: "ไม่พบสินค้าในตะกร้า !" });
         }
 
+        // ดึงข้อมูลสินค้าในคลัง
+        const warehouseItem = await WareHouses.findOne({ where: { productId: cartItem.productId } });
+        if (!warehouseItem) {
+            return res.status(404).json({ msg: "ไม่พบข้อมูลสินค้าในคลัง !" });
+        }
+
+        // ตรวจสอบว่าจำนวนที่ต้องการเพิ่มไม่เกินจำนวนในคลัง
+        if (quantity > warehouseItem.quantity) {
+            return res.status(400).json({ msg: "จำนวนสินค้าที่คุณต้องการเกินจำนวนที่มีในคลัง !" });
+        }
+
         cartItem.quantity = quantity;
         await cartItem.save();
         res.status(200).json({ msg: "อัปเดตจำนวนสินค้าในตะกร้าสำเร็จ !" });

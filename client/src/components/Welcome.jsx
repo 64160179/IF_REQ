@@ -62,7 +62,7 @@ const Welcome = () => {
       {/* end image slider */}
       
       {/* start dashboard */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+      {/* <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
         <div style={{ flex: '1', margin: '10px', padding: '20px', backgroundColor: '#00396b', textAlign: 'center', color: "#ffffff" }}>
           <h3>Dashboard 1</h3>
           <p>รายละเอียดของ Dashboard 1</p>
@@ -79,7 +79,7 @@ const Welcome = () => {
           <h3>Dashboard 4</h3>
           <p>รายละเอียดของ Dashboard 4</p>
         </div>
-      </div>
+      </div> */}
       {/* end dashboard */}
 
     </div>
