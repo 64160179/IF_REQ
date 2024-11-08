@@ -3,15 +3,7 @@
 </div>
 
 <div id="badges" align="center">
-  <h1>
+  <h3>
     ระบบจัดการการเบิกวัสดุและอุปกรณ์ภายในคณะวิทยาการสารสนเทศ
-    <img src="https://media.giphy.com/media/hvRJCLFzcasrR4ia7z/giphy.gif" width="30px"/>
-  </h1>
+  </h3>
 </div>
-
-### :woman_technologist: Tech Stack :
-Front-End => vite + react + redux <br>
-Back-End => NodeJS (MVC) <br>
-API => Axios <br>
-ʕノ•ᴥ•ʔノ Need Some Rest ︵ ┻━┻
----
