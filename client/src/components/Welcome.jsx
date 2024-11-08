@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector } from "react-redux";
+// import axios from 'axios';
 import '../../src/App.css';
 
 import image1 from '../assets/image1.png';
@@ -11,6 +12,9 @@ import image5 from '../assets/image5.png';
 const Welcome = () => {
   const { user } = useSelector((state) => state.auth);
   const [currentIndex, setCurrentIndex] = useState(0);
+  // const [products, setProducts] = useState([]);
+  // const [warehouseItems, setWarehouseItems] = useState([]);
+  // const [showOutOfStock, setShowOutOfStock] = useState(false);
 
   const images = [
     image1,
@@ -37,6 +41,43 @@ const Welcome = () => {
     return () => clearInterval(interval);
   }, [nextSlide]); // เพิ่ม nextSlide ลงใน dependency array
 
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     try {
+  //       const response = await axios.get('http://localhost:5000/products'); // เปลี่ยน URL ให้ตรงกับ API ของคุณ
+  //       setProducts(response.data);
+  //     } catch (error) {
+  //       console.error('Error fetching products:', error);
+  //     }
+  //   };
+
+  //   const fetchWarehouseItems = async () => {
+  //     try {
+  //       const response = await axios.get('http://localhost:5000/warehouses'); // เปลี่ยน URL ให้ตรงกับ API ของคุณ
+  //       setWarehouseItems(response.data);
+  //     } catch (error) {
+  //       console.error('Error fetching warehouse items:', error);
+  //     }
+  //   };
+
+  //   fetchProducts();
+  //   fetchWarehouseItems();
+  // }, []);
+
+  // const lowStockItems = warehouseItems
+  //   .filter(item => item.quantity < 10 && item.quantity > 0)
+  //   .map(item => ({
+  //     ...item,
+  //     product: products.find(product => product.id === item.productId)
+  //   }));
+
+  // const outOfStockItems = warehouseItems
+  //   .filter(item => item.quantity === 0)
+  //   .map(item => ({
+  //     ...item,
+  //     product: products.find(product => product.id === item.productId)
+  //   }));
+
   return (
     <div>
       <br />
@@ -44,7 +85,7 @@ const Welcome = () => {
         <h1 className="title">หน้าหลัก</h1>
         <span className="subtitle" style={{ marginRight: "5px" }}>ยินดีต้อนรับคุณ <strong>{user && user.fname}</strong> <strong>{user && user.lname}</strong></span>
       </div>
-      
+
       {/* start image slider */}
       <div className="slider">
         <button onClick={prevSlide} className="prev">
@@ -60,7 +101,7 @@ const Welcome = () => {
         </button>
       </div>
       {/* end image slider */}
-      
+
       {/* start dashboard */}
       {/* <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
         <div style={{ flex: '1', margin: '10px', padding: '20px', backgroundColor: '#00396b', textAlign: 'center', color: "#ffffff" }}>
@@ -78,6 +119,37 @@ const Welcome = () => {
         <div style={{ flex: '1', margin: '10px', padding: '20px', backgroundColor: '#00396b', textAlign: 'center', color: "#ffffff" }}>
           <h3>Dashboard 4</h3>
           <p>รายละเอียดของ Dashboard 4</p>
+        </div>
+      </div> */}
+      {/* end dashboard */}
+
+      {/* start dashboard */}
+      {/* <div className="dashboard-container" >
+        <div className="dashboard">
+          <h3>Dashboard 1</h3>
+          <h4>แจ้งเตือน: สินค้าที่มีจำนวนน้อยกว่า 10 ชิ้น</h4>
+          <br />
+          {lowStockItems.length > 0 && (
+            <div className="low-stock-alert">
+              
+              <table className="stock-table">
+                <thead>
+                  <tr>
+                    <th>ชื่อสินค้า</th>
+                    <th>จำนวน</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {lowStockItems.map(item => (
+                    <tr key={item.id}>
+                      <td>{item.product ? item.product.name : 'ข้อมูลสินค้าไม่สมบูรณ์'}</td>
+                      <td>{item.product ? `${item.quantity} ` : '-'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div> */}
       {/* end dashboard */}

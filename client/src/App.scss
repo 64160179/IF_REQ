@@ -694,6 +694,94 @@ video {
     /* เพิ่มระยะห่างระหว่างแต่ละ p */
 }
 
+.dashboard-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+.dashboard {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.dashboard h3 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.dashboard p {
+    font-size: 1em;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.low-stock-alert {
+    border: 1px solid #ffcccc;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #fff6f6;
+}
+
+.low-stock-alert h4 {
+    color: #ff4d4d;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.low-stock-alert ul {
+    list-style: none;
+    padding: 0;
+}
+
+.low-stock-alert li {
+    font-size: 1em;
+    color: #333;
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.low-stock-alert li:last-child {
+    border-bottom: none;
+}
+
+.stock-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.stock-table th,
+.stock-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.stock-table th {
+    background-color: #ff4d4d;
+    color: white;
+    font-weight: bold;
+}
+
+.stock-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.stock-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.stock-table td {
+    color: #333;
+}
 
 @media screen and (max-width:602px) {
 
